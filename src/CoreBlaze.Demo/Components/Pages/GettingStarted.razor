@@ -1,0 +1,678 @@
+@page "/docs/getting-started"
+
+<PageTitle>Getting Started · CoreBlaze</PageTitle>
+
+<div class="gs-page">
+
+    <!-- ══ Hero ══════════════════════════════════════════════════════ -->
+    <div class="gs-hero">
+        <div class="gs-hero__badge">v0.1.0 · MIT · .NET 8+</div>
+        <h1 class="gs-hero__title">Getting Started with CoreBlaze</h1>
+        <p class="gs-hero__lead">
+            A lightweight Razor Class Library of production-ready Blazor components —
+            inputs, grids, spinners, tabs, toasts, and more — packaged as a NuGet library
+            and ready to drop into any Blazor Server or Blazor Web App project.
+        </p>
+        <div class="gs-hero__links">
+            <a class="gs-btn gs-btn--primary" href="https://github.com/meruvakirankumar/CoreBlazeKit" target="_blank">
+                <span>GitHub</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.4.6.1.82-.26.82-.58v-2.16c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.13 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.22.7.83.58A12.01 12.01 0 0 0 24 12C24 5.37 18.63 0 12 0z"/></svg>
+            </a>
+            <a class="gs-btn gs-btn--outline" href="inputs">Browse components →</a>
+        </div>
+    </div>
+
+    <!-- ══ Step 1: Install ═══════════════════════════════════════════ -->
+    <section class="gs-section">
+        <div class="gs-step-label">Step 1</div>
+        <h2 class="gs-section__title">Install the NuGet package</h2>
+        <p class="gs-section__desc">Add CoreBlaze.Components to your Blazor project via the .NET CLI, Package Manager, or your <code>.csproj</code> file.</p>
+
+        <div class="gs-tabs" id="install-tabs">
+            <div class="gs-tabs__bar">
+                <button class="gs-tab gs-tab--active" onclick="gsTab('install-tabs','cli')">CLI</button>
+                <button class="gs-tab" onclick="gsTab('install-tabs','pm')">Package Manager</button>
+                <button class="gs-tab" onclick="gsTab('install-tabs','csproj')">csproj</button>
+            </div>
+            <div class="gs-tab-panel gs-tab-panel--active" data-tab="cli">
+                <div class="gs-code-block">
+                    <pre><code>dotnet add package CoreBlaze.Components</code></pre>
+                    <button class="gs-copy-btn" onclick="gsCopy(this, 'dotnet add package CoreBlaze.Components')">Copy</button>
+                </div>
+            </div>
+            <div class="gs-tab-panel" data-tab="pm">
+                <div class="gs-code-block">
+                    <pre><code>Install-Package CoreBlaze.Components</code></pre>
+                    <button class="gs-copy-btn" onclick="gsCopy(this, 'Install-Package CoreBlaze.Components')">Copy</button>
+                </div>
+            </div>
+            <div class="gs-tab-panel" data-tab="csproj">
+                <div class="gs-code-block">
+                    <pre><code>&lt;PackageReference Include="CoreBlaze.Components" Version="0.1.0" /&gt;</code></pre>
+                    <button class="gs-copy-btn" onclick="gsCopy(this, '&lt;PackageReference Include=&quot;CoreBlaze.Components&quot; Version=&quot;0.1.0&quot; /&gt;')">Copy</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ Step 2: Add CSS & JS ═══════════════════════════════════════ -->
+    <section class="gs-section">
+        <div class="gs-step-label">Step 2</div>
+        <h2 class="gs-section__title">Add CSS &amp; JS to <code>App.razor</code></h2>
+        <p class="gs-section__desc">
+            The RCL ships one stylesheet and one small JS helper (used for file downloads and clipboard copy).
+            Reference them in <code>App.razor</code> or your <code>&lt;head&gt;</code> layout.
+        </p>
+        <div class="gs-code-block">
+            <div class="gs-code-block__filename">App.razor</div>
+            <pre><code>&lt;head&gt;
+    ...
+    &lt;!-- CoreBlaze styles --&gt;
+    &lt;link rel="stylesheet"
+          href="_content/CoreBlaze.Components/coreblaze.css" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;Routes /&gt;
+    &lt;!-- CoreBlaze JS helpers (clipboard, file download) --&gt;
+    &lt;script src="_content/CoreBlaze.Components/coreblaze.js"&gt;&lt;/script&gt;
+&lt;/body&gt;</code></pre>
+        </div>
+    </section>
+
+    <!-- ══ Step 3: _Imports.razor ════════════════════════════════════ -->
+    <section class="gs-section">
+        <div class="gs-step-label">Step 3</div>
+        <h2 class="gs-section__title">Add namespaces to <code>_Imports.razor</code></h2>
+        <p class="gs-section__desc">
+            Add the CoreBlaze namespaces so you can use components without per-page <code>@@using</code> directives.
+        </p>
+        <div class="gs-code-block">
+            <div class="gs-code-block__filename">_Imports.razor</div>
+            <pre><code>@@using CoreBlaze.Components
+@@using CoreBlaze.Components.Grid
+@@using CoreBlaze.Components.Inputs
+@@using CoreBlaze.Components.Shared
+@@using CoreBlaze.Components.Services</code></pre>
+        </div>
+    </section>
+
+    <!-- ══ Step 4: Optional services ════════════════════════════════ -->
+    <section class="gs-section">
+        <div class="gs-step-label">Step 4 (optional)</div>
+        <h2 class="gs-section__title">Register optional services</h2>
+        <p class="gs-section__desc">
+            Register <code>ThemeService</code> if you want programmatic dark / light mode switching from C# code.
+            The service is not required if you toggle dark mode by adding <code>cb-theme-dark</code> to a DOM element yourself.
+        </p>
+        <div class="gs-code-block">
+            <div class="gs-code-block__filename">Program.cs</div>
+            <pre><code>builder.Services.AddScoped&lt;CoreBlaze.Components.Services.ThemeService&gt;();</code></pre>
+        </div>
+    </section>
+
+    <!-- ══ Component catalog ═════════════════════════════════════════ -->
+    <section class="gs-section">
+        <h2 class="gs-section__title">Component catalog</h2>
+        <p class="gs-section__desc">Every component in this release — click a row to open the demo page.</p>
+
+        <div class="gs-catalog">
+
+            <div class="gs-catalog__group">
+                <div class="gs-catalog__group-title">Inputs</div>
+                <div class="gs-catalog__items">
+                    <a class="gs-catalog__item" href="inputs/text">
+                        <span class="gs-catalog__name">TextInput</span>
+                        <span class="gs-catalog__desc">Single-line text with label, hint, validation</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="inputs/textarea">
+                        <span class="gs-catalog__name">TextArea</span>
+                        <span class="gs-catalog__desc">Multi-line text input with auto-resize option</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="inputs/number">
+                        <span class="gs-catalog__name">NumberInput</span>
+                        <span class="gs-catalog__desc">Numeric input with min / max / step and format</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="inputs/date">
+                        <span class="gs-catalog__name">DatePicker</span>
+                        <span class="gs-catalog__desc">Native date picker with nullable <code>DateTime</code> binding</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="inputs/dropdown">
+                        <span class="gs-catalog__name">Dropdown</span>
+                        <span class="gs-catalog__desc">Single-select list with search and placeholder</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="inputs/multiselect">
+                        <span class="gs-catalog__name">MultiSelect</span>
+                        <span class="gs-catalog__desc">Tag-chip multi-select with search filtering</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="inputs/fileupload">
+                        <span class="gs-catalog__name">FileUpload</span>
+                        <span class="gs-catalog__desc">Drag-and-drop or click-to-browse file picker</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="gs-catalog__group">
+                <div class="gs-catalog__group-title">Data</div>
+                <div class="gs-catalog__items">
+                    <a class="gs-catalog__item" href="grid">
+                        <span class="gs-catalog__name">DataGrid&lt;T&gt;</span>
+                        <span class="gs-catalog__desc">Sort, filter, page, row/cell edit, bulk delete, CSV / Excel / PDF export</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="grid/simple">
+                        <span class="gs-catalog__name">SimpleGrid&lt;T&gt;</span>
+                        <span class="gs-catalog__desc">Lightweight read-only table with column sorting and custom templates</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="grid/editable">
+                        <span class="gs-catalog__name">EditableGrid&lt;T&gt;</span>
+                        <span class="gs-catalog__desc">Inline spreadsheet-style editing, auto type detection, add/delete rows</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="display">
+                        <span class="gs-catalog__name">Display components</span>
+                        <span class="gs-catalog__desc">Badge, Avatar, Progress, Alert, Toggle and more</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="gs-catalog__group">
+                <div class="gs-catalog__group-title">Feedback</div>
+                <div class="gs-catalog__items">
+                    <a class="gs-catalog__item" href="feedback">
+                        <span class="gs-catalog__name">Toast</span>
+                        <span class="gs-catalog__desc">Stackable toast notifications (success, info, warning, error)</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="feedback">
+                        <span class="gs-catalog__name">Modal</span>
+                        <span class="gs-catalog__desc">Accessible dialog with customisable header, body, and footer slots</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="gs-catalog__group">
+                <div class="gs-catalog__group-title">Layout</div>
+                <div class="gs-catalog__items">
+                    <a class="gs-catalog__item" href="layout/spinner">
+                        <span class="gs-catalog__name">Spinner</span>
+                        <span class="gs-catalog__desc">4 animation variants, 6 sizes, custom colours and centre content</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="layout/spinner">
+                        <span class="gs-catalog__name">LoadingOverlay</span>
+                        <span class="gs-catalog__desc">Blur-curtain wrapper for any content block</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                    <a class="gs-catalog__item" href="layout/tabs">
+                        <span class="gs-catalog__name">Tabs</span>
+                        <span class="gs-catalog__desc">Accessible tab container with lazy content rendering</span>
+                        <span class="gs-catalog__arrow">→</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ══ Quick examples ═══════════════════════════════════════════ -->
+    <section class="gs-section">
+        <h2 class="gs-section__title">Quick examples</h2>
+
+        <div class="gs-examples">
+
+            <!-- TextInput -->
+            <div class="gs-example">
+                <div class="gs-example__header">
+                    <span class="gs-example__title">TextInput</span>
+                    <a class="gs-example__link" href="inputs/text">Full demo →</a>
+                </div>
+                <div class="gs-code-block">
+                    <pre><code>&lt;TextInput Label="Full name"
+           @@bind-Value="_name"
+           Placeholder="e.g. Alice Chen"
+           HelpText="Used for your public profile." /&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- Dropdown -->
+            <div class="gs-example">
+                <div class="gs-example__header">
+                    <span class="gs-example__title">Dropdown</span>
+                    <a class="gs-example__link" href="inputs/dropdown">Full demo →</a>
+                </div>
+                <div class="gs-code-block">
+                    <pre><code>&lt;Dropdown Label="Department"
+          @@bind-Value="_dept"
+          Items="_departments"
+          Placeholder="Select…" /&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- DataGrid -->
+            <div class="gs-example">
+                <div class="gs-example__header">
+                    <span class="gs-example__title">DataGrid&lt;T&gt;</span>
+                    <a class="gs-example__link" href="grid">Full demo →</a>
+                </div>
+                <div class="gs-code-block">
+                    <pre><code>&lt;DataGrid T="Person" Items="_people" Title="People"
+          AllowAdd AllowEdit AllowDelete
+          AllowExportCsv AllowExportExcel&gt;
+    &lt;GridColumn T="Person" Field="Name"  Title="Name" /&gt;
+    &lt;GridColumn T="Person" Field="Email" Title="Email" /&gt;
+    &lt;GridColumn T="Person" Field="Age"   Title="Age" Align="GridAlign.Right" /&gt;
+&lt;/DataGrid&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- SimpleGrid -->
+            <div class="gs-example">
+                <div class="gs-example__header">
+                    <span class="gs-example__title">SimpleGrid&lt;T&gt;</span>
+                    <a class="gs-example__link" href="grid/simple">Full demo →</a>
+                </div>
+                <div class="gs-code-block">
+                    <pre><code>&lt;SimpleGrid T="Order" Items="_orders" Striped Hoverable&gt;
+    &lt;SimpleGridColumn T="Order" Field="Id"      Title="#" Width="4rem" /&gt;
+    &lt;SimpleGridColumn T="Order" Field="Product" Title="Product" /&gt;
+    &lt;SimpleGridColumn T="Order" Field="Total"   Title="Total"
+                      Align="GridAlign.Right" Format="C2" /&gt;
+&lt;/SimpleGrid&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- EditableGrid -->
+            <div class="gs-example">
+                <div class="gs-example__header">
+                    <span class="gs-example__title">EditableGrid&lt;T&gt;</span>
+                    <a class="gs-example__link" href="grid/editable">Full demo →</a>
+                </div>
+                <div class="gs-code-block">
+                    <pre><code>&lt;EditableGrid T="Task" Items="_tasks" ItemsChanged="v =&gt; _tasks = v"
+              OnChange="OnTaskChanged" Striped&gt;
+    &lt;EditableGridColumn T="Task" Field="Title"    Title="Task" /&gt;
+    &lt;EditableGridColumn T="Task" Field="Priority" Title="Priority"
+                        Options="@@(new[]{"Low","Medium","High"})" /&gt;
+    &lt;EditableGridColumn T="Task" Field="DueDate"  Title="Due date" /&gt;
+    &lt;EditableGridColumn T="Task" Field="Done"     Title="Done"
+                        Align="GridAlign.Center" /&gt;
+&lt;/EditableGrid&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- Spinner -->
+            <div class="gs-example">
+                <div class="gs-example__header">
+                    <span class="gs-example__title">Spinner</span>
+                    <a class="gs-example__link" href="layout/spinner">Full demo →</a>
+                </div>
+                <div class="gs-code-block">
+                    <pre><code>&lt;!-- Inside a button --&gt;
+&lt;button disabled="@@_saving"&gt;
+    @@if (_saving) { &lt;Spinner Size="SpinnerSize.Small" /&gt; }
+    @@(_saving ? "Saving…" : "Save")
+&lt;/button&gt;
+
+&lt;!-- Full-page overlay --&gt;
+&lt;LoadingOverlay IsLoading="_busy" LoadingText="Please wait…"&gt;
+    &lt;YourContent /&gt;
+&lt;/LoadingOverlay&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- Toast -->
+            <div class="gs-example">
+                <div class="gs-example__header">
+                    <span class="gs-example__title">Toast notifications</span>
+                    <a class="gs-example__link" href="feedback">Full demo →</a>
+                </div>
+                <div class="gs-code-block">
+                    <pre><code>@@* Place once in your layout *@@
+&lt;ToastContainer /&gt;
+
+@@* Inject and use anywhere *@@
+@@inject ToastService Toast
+
+&lt;button @@onclick="ShowToast"&gt;Notify&lt;/button&gt;
+
+@@code {
+    void ShowToast() =&gt;
+        Toast.Show("Saved!", ToastVariant.Success);
+}</code></pre>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ══ Theming ═══════════════════════════════════════════════════ -->
+    <section class="gs-section">
+        <h2 class="gs-section__title">Theming &amp; dark mode</h2>
+        <p class="gs-section__desc">
+            CoreBlaze uses CSS custom properties throughout. Override any variable at the <code>:root</code> level to apply a global brand colour,
+            or add the <code>cb-theme-dark</code> class to any ancestor element to switch that subtree to dark mode.
+        </p>
+        <div class="gs-two-col">
+            <div class="gs-code-block">
+                <div class="gs-code-block__filename">Custom brand colour</div>
+                <pre><code>:root {
+    --cb-primary:      #0ea5e9; /* sky blue */
+    --cb-primary-dark: #0284c7;
+}</code></pre>
+            </div>
+            <div class="gs-code-block">
+                <div class="gs-code-block__filename">Dark mode toggle (Blazor)</div>
+                <pre><code>&lt;div class="@@(_dark ? "cb-theme-dark" : null)"&gt;
+    &lt;!-- all CoreBlaze components inside use dark palette --&gt;
+    &lt;DataGrid ... /&gt;
+&lt;/div&gt;
+
+@@code {
+    bool _dark = false;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="gs-token-table">
+            <div class="gs-token-table__title">Key CSS variables</div>
+            <table>
+                <thead>
+                    <tr><th>Variable</th><th>Default (light)</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>--cb-primary</code></td><td><span class="gs-swatch" style="background:#4f46e5"></span>#4f46e5</td><td>Brand / accent colour</td></tr>
+                    <tr><td><code>--cb-surface</code></td><td><span class="gs-swatch" style="background:#ffffff;border:1px solid #e5e7eb"></span>#ffffff</td><td>Component background</td></tr>
+                    <tr><td><code>--cb-border</code></td><td><span class="gs-swatch" style="background:#e5e7eb"></span>#e5e7eb</td><td>Borders and dividers</td></tr>
+                    <tr><td><code>--cb-text</code></td><td><span class="gs-swatch" style="background:#111827"></span>#111827</td><td>Primary text colour</td></tr>
+                    <tr><td><code>--cb-radius</code></td><td>0.5rem</td><td>Component border radius</td></tr>
+                    <tr><td><code>--cb-font</code></td><td>system-ui, sans-serif</td><td>Component font family</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ══ Peer dependencies ════════════════════════════════════════ -->
+    <section class="gs-section">
+        <h2 class="gs-section__title">Peer dependencies</h2>
+        <p class="gs-section__desc">
+            These packages are automatically pulled in when you install <code>CoreBlaze.Components</code>.
+        </p>
+        <div class="gs-dep-list">
+            <div class="gs-dep">
+                <span class="gs-dep__name">Microsoft.AspNetCore.Components.Web</span>
+                <span class="gs-dep__version">≥ 8.0</span>
+                <span class="gs-dep__note">Core Blazor primitives</span>
+            </div>
+            <div class="gs-dep">
+                <span class="gs-dep__name">Microsoft.AspNetCore.Components.Forms</span>
+                <span class="gs-dep__version">≥ 8.0</span>
+                <span class="gs-dep__note">EditContext / form validation</span>
+            </div>
+            <div class="gs-dep">
+                <span class="gs-dep__name">ClosedXML</span>
+                <span class="gs-dep__version">0.104.1</span>
+                <span class="gs-dep__note">Excel export in DataGrid</span>
+            </div>
+            <div class="gs-dep">
+                <span class="gs-dep__name">QuestPDF</span>
+                <span class="gs-dep__version">2024.12.3</span>
+                <span class="gs-dep__note">PDF export in DataGrid (Community licence)</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ Next steps ═══════════════════════════════════════════════ -->
+    <section class="gs-section gs-section--next">
+        <h2 class="gs-section__title">Next steps</h2>
+        <div class="gs-next-cards">
+            <a class="gs-next-card" href="inputs">
+                <div class="gs-next-card__icon">Aa</div>
+                <div class="gs-next-card__title">Explore inputs</div>
+                <div class="gs-next-card__desc">TextInput, Dropdown, MultiSelect, DatePicker and more</div>
+            </a>
+            <a class="gs-next-card" href="grid">
+                <div class="gs-next-card__icon">▤</div>
+                <div class="gs-next-card__title">DataGrid</div>
+                <div class="gs-next-card__desc">Full-featured grid with editing, filtering, and export</div>
+            </a>
+            <a class="gs-next-card" href="layout/spinner">
+                <div class="gs-next-card__icon">◌</div>
+                <div class="gs-next-card__title">Spinner &amp; overlays</div>
+                <div class="gs-next-card__desc">Loading indicators with 6 sizes and 4 animation variants</div>
+            </a>
+            <a class="gs-next-card" href="form">
+                <div class="gs-next-card__icon">✓</div>
+                <div class="gs-next-card__title">Form validation</div>
+                <div class="gs-next-card__desc">DataAnnotations wired up end-to-end</div>
+            </a>
+        </div>
+    </section>
+
+</div>
+
+<script>
+function gsTab(containerId, tabId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.querySelectorAll('.gs-tab').forEach(t => t.classList.remove('gs-tab--active'));
+    container.querySelectorAll('.gs-tab-panel').forEach(p => p.classList.remove('gs-tab-panel--active'));
+    const activeTab = [...container.querySelectorAll('.gs-tab')].find(t => t.getAttribute('onclick')?.includes("'" + tabId + "'"));
+    if (activeTab) activeTab.classList.add('gs-tab--active');
+    const activePanel = container.querySelector('[data-tab="' + tabId + '"]');
+    if (activePanel) activePanel.classList.add('gs-tab-panel--active');
+}
+function gsCopy(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✓ Copied';
+        btn.classList.add('gs-copy-btn--copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('gs-copy-btn--copied'); }, 1800);
+    });
+}
+</script>
+
+<style>
+/* ── Page wrapper ─────────────────────────────────────────────── */
+.gs-page { max-width: 860px; margin: 0 auto; padding-bottom: 3rem; }
+
+/* ── Hero ─────────────────────────────────────────────────────── */
+.gs-hero {
+    padding: 2.5rem 0 2rem;
+    border-bottom: 1px solid var(--app-border);
+    margin-bottom: 2.5rem;
+}
+.gs-hero__badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: color-mix(in srgb, var(--app-brand) 12%, transparent);
+    color: var(--app-brand);
+    border: 1px solid color-mix(in srgb, var(--app-brand) 25%, transparent);
+    margin-bottom: 1rem;
+}
+.gs-hero__title {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 800;
+    color: var(--app-text);
+    margin: 0 0 0.75rem;
+    line-height: 1.2;
+}
+.gs-hero__lead { font-size: 1.05rem; color: var(--app-text-mute); max-width: 640px; margin: 0 0 1.5rem; line-height: 1.6; }
+.gs-hero__links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.gs-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.5rem 1.1rem; border-radius: 0.45rem;
+    font-size: 0.875rem; font-weight: 600; text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.gs-btn--primary { background: var(--app-brand); color: #fff; border: 1.5px solid var(--app-brand); }
+.gs-btn--primary:hover { filter: brightness(1.1); }
+.gs-btn--outline { background: transparent; color: var(--app-brand); border: 1.5px solid var(--app-brand); }
+.gs-btn--outline:hover { background: color-mix(in srgb, var(--app-brand) 8%, transparent); }
+
+/* ── Sections ─────────────────────────────────────────────────── */
+.gs-section { margin-bottom: 2.5rem; }
+.gs-step-label {
+    display: inline-block; font-size: 0.68rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--app-brand); margin-bottom: 0.4rem;
+}
+.gs-section__title { font-size: 1.2rem; font-weight: 700; color: var(--app-text); margin: 0 0 0.5rem; }
+.gs-section__desc { color: var(--app-text-mute); font-size: 0.9rem; margin: 0 0 1rem; line-height: 1.6; }
+
+/* ── Code blocks ──────────────────────────────────────────────── */
+.gs-code-block {
+    position: relative;
+    border: 1px solid var(--app-border);
+    border-radius: 0.6rem;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+.gs-code-block__filename {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--app-text-mute);
+    background: color-mix(in srgb, var(--app-border) 40%, transparent);
+    border-bottom: 1px solid var(--app-border);
+    font-family: monospace;
+}
+.gs-code-block pre {
+    margin: 0;
+    padding: 1rem 1rem;
+    background: var(--app-code-bg, #f8f9fa);
+    overflow-x: auto;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--app-text);
+}
+.gs-code-block pre code { font-family: 'Cascadia Code', 'Fira Code', monospace; }
+.gs-copy-btn {
+    position: absolute; top: 0.5rem; right: 0.5rem;
+    padding: 0.18rem 0.55rem; border-radius: 0.3rem;
+    border: 1px solid var(--app-border);
+    background: var(--app-surface); color: var(--app-text-mute);
+    font-size: 0.7rem; font-weight: 600; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.gs-copy-btn:hover { background: var(--app-brand); color: #fff; border-color: var(--app-brand); }
+.gs-copy-btn--copied { background: #10b981 !important; color: #fff !important; border-color: #10b981 !important; }
+
+/* ── Tabs ─────────────────────────────────────────────────────── */
+.gs-tabs { border: 1px solid var(--app-border); border-radius: 0.6rem; overflow: hidden; }
+.gs-tabs__bar {
+    display: flex; background: color-mix(in srgb, var(--app-border) 30%, transparent);
+    border-bottom: 1px solid var(--app-border);
+}
+.gs-tab {
+    padding: 0.45rem 1rem; border: none; background: transparent;
+    color: var(--app-text-mute); font-size: 0.82rem; font-weight: 600; cursor: pointer;
+    border-right: 1px solid var(--app-border); transition: background 0.12s, color 0.12s;
+}
+.gs-tab:last-child { border-right: 0; }
+.gs-tab--active { background: var(--app-surface); color: var(--app-brand); }
+.gs-tab-panel { display: none; }
+.gs-tab-panel--active { display: block; }
+.gs-tabs .gs-code-block { border: none; border-radius: 0; margin: 0; }
+.gs-tabs .gs-code-block pre { border-radius: 0; }
+
+/* ── Catalog ──────────────────────────────────────────────────── */
+.gs-catalog { display: flex; flex-direction: column; gap: 1.25rem; }
+.gs-catalog__group-title {
+    font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--app-text-mute);
+    margin-bottom: 0.4rem; padding-left: 0.1rem;
+}
+.gs-catalog__items { display: flex; flex-direction: column; gap: 2px; }
+.gs-catalog__item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.6rem 0.9rem; border-radius: 0.5rem;
+    border: 1px solid var(--app-border); background: var(--app-surface);
+    text-decoration: none; color: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.gs-catalog__item:hover { border-color: var(--app-brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-brand) 12%, transparent); }
+.gs-catalog__name { font-weight: 600; font-size: 0.875rem; color: var(--app-text); white-space: nowrap; min-width: 11rem; }
+.gs-catalog__desc { font-size: 0.82rem; color: var(--app-text-mute); flex: 1; }
+.gs-catalog__arrow { color: var(--app-brand); font-size: 0.85rem; }
+
+/* ── Examples grid ────────────────────────────────────────────── */
+.gs-examples { display: grid; grid-template-columns: repeat(auto-fill, minmax(26rem, 1fr)); gap: 1rem; }
+.gs-example { border: 1px solid var(--app-border); border-radius: 0.65rem; overflow: hidden; }
+.gs-example__header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.5rem 0.9rem; background: color-mix(in srgb, var(--app-border) 30%, transparent);
+    border-bottom: 1px solid var(--app-border);
+}
+.gs-example__title { font-weight: 700; font-size: 0.85rem; color: var(--app-text); }
+.gs-example__link { font-size: 0.75rem; color: var(--app-brand); text-decoration: none; font-weight: 600; }
+.gs-example .gs-code-block { border: none; border-radius: 0; margin: 0; }
+.gs-example .gs-code-block pre { font-size: 0.77rem; border-radius: 0; }
+
+/* ── Two-col layout ───────────────────────────────────────────── */
+.gs-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+@@media (max-width: 640px) { .gs-two-col { grid-template-columns: 1fr; } }
+
+/* ── Token table ──────────────────────────────────────────────── */
+.gs-token-table { border: 1px solid var(--app-border); border-radius: 0.6rem; overflow: hidden; }
+.gs-token-table__title {
+    padding: 0.45rem 0.9rem; font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--app-text-mute);
+    background: color-mix(in srgb, var(--app-border) 30%, transparent);
+    border-bottom: 1px solid var(--app-border);
+}
+.gs-token-table table { width: 100%; border-collapse: collapse; }
+.gs-token-table th {
+    padding: 0.45rem 0.9rem; text-align: left; font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--app-text-mute);
+    border-bottom: 1px solid var(--app-border); background: var(--app-surface);
+}
+.gs-token-table td { padding: 0.5rem 0.9rem; font-size: 0.83rem; border-bottom: 1px solid var(--app-border); color: var(--app-text); }
+.gs-token-table tbody tr:last-child td { border-bottom: 0; }
+.gs-swatch { display: inline-block; width: 0.75rem; height: 0.75rem; border-radius: 3px; vertical-align: middle; margin-right: 0.35rem; }
+
+/* ── Dep list ─────────────────────────────────────────────────── */
+.gs-dep-list { display: flex; flex-direction: column; gap: 2px; }
+.gs-dep {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.55rem 0.9rem; border-radius: 0.45rem;
+    border: 1px solid var(--app-border); background: var(--app-surface);
+    font-size: 0.83rem;
+}
+.gs-dep__name { font-weight: 600; color: var(--app-text); flex: 1; }
+.gs-dep__version {
+    padding: 0.1rem 0.45rem; border-radius: 999px;
+    font-size: 0.7rem; font-weight: 700;
+    background: color-mix(in srgb, var(--app-brand) 10%, transparent);
+    color: var(--app-brand);
+    white-space: nowrap;
+}
+.gs-dep__note { color: var(--app-text-mute); font-size: 0.78rem; }
+
+/* ── Next steps cards ─────────────────────────────────────────── */
+.gs-next-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 0.9rem; }
+.gs-next-card {
+    display: flex; flex-direction: column; gap: 0.4rem;
+    padding: 1rem; border-radius: 0.65rem;
+    border: 1.5px solid var(--app-border); background: var(--app-surface);
+    text-decoration: none; color: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.gs-next-card:hover { border-color: var(--app-brand); transform: translateY(-2px); box-shadow: 0 4px 16px color-mix(in srgb, var(--app-brand) 12%, transparent); }
+.gs-next-card__icon { font-size: 1.3rem; }
+.gs-next-card__title { font-weight: 700; font-size: 0.875rem; color: var(--app-text); }
+.gs-next-card__desc { font-size: 0.78rem; color: var(--app-text-mute); line-height: 1.4; }
+</style>

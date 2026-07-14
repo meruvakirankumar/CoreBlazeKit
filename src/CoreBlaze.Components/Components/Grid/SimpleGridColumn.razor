@@ -1,0 +1,21 @@
+@namespace CoreBlaze.Components.Grid
+@typeparam T where T : class
+@implements IDisposable
+
+@code {
+    [CascadingParameter] public SimpleGrid<T>? Parent { get; set; }
+
+    [Parameter] public string? Field        { get; set; }
+    [Parameter] public string? Title        { get; set; }
+    [Parameter] public string? Width        { get; set; }
+    [Parameter] public bool    Sortable     { get; set; } = true;
+    [Parameter] public bool    Visible      { get; set; } = true;
+    [Parameter] public string? Format       { get; set; }
+    [Parameter] public GridAlign Align      { get; set; } = GridAlign.Left;
+    [Parameter] public RenderFragment<T>?   Template       { get; set; }
+    [Parameter] public RenderFragment?      HeaderTemplate { get; set; }
+
+    protected override void OnInitialized() => Parent?.AddColumn(this);
+
+    public void Dispose() => Parent?.RemoveColumn(this);
+}

@@ -1,0 +1,182 @@
+@page "/grid/simple"
+@using CoreBlaze.Components.Grid
+
+<PageTitle>SimpleGrid · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>SimpleGrid</h1>
+    <p class="text-muted">
+        A lightweight read-only table with optional column sorting, striped rows,
+        hover highlight, custom cell templates, and a click-to-select row callback.
+        Use <a href="/grid">DataGrid</a> when you need editing, filtering, paging, or export.
+    </p>
+</div>
+
+<!-- ══════════════════ Basic example ══════════════════ -->
+<div class="demo-section">
+    <h3>Basic — auto columns</h3>
+    <p class="demo-section__hint">Columns are declared with <code>&lt;SimpleGridColumn&gt;</code>. Sortable by default — click any header.</p>
+
+    <SimpleGrid T="Employee" Items="_employees" Striped Hoverable Title="Employees">
+        <SimpleGridColumn T="Employee" Field="Name"       Title="Name"       />
+        <SimpleGridColumn T="Employee" Field="Department" Title="Department" />
+        <SimpleGridColumn T="Employee" Field="HireDate"   Title="Hire date"  Format="dd MMM yyyy" />
+        <SimpleGridColumn T="Employee" Field="Salary"     Title="Salary"     Align="GridAlign.Right" Format="C0" />
+        <SimpleGridColumn T="Employee" Field="IsActive"   Title="Active"     Align="GridAlign.Center" Sortable="false">
+            <Template Context="emp">
+                <span class="cb-badge @(emp.IsActive ? "cb-badge--success" : "cb-badge--secondary")">
+                    @(emp.IsActive ? "Active" : "Inactive")
+                </span>
+            </Template>
+        </SimpleGridColumn>
+    </SimpleGrid>
+</div>
+
+<!-- ══════════════════ Variants ══════════════════ -->
+<div class="demo-section">
+    <h3>Style variants</h3>
+    <div class="sg-variant-grid">
+
+        <div>
+            <p class="demo-section__hint">Default</p>
+            <SimpleGrid T="Employee" Items="_short" Hoverable ShowFooter="false">
+                <SimpleGridColumn T="Employee" Field="Name"       Title="Name" />
+                <SimpleGridColumn T="Employee" Field="Department" Title="Dept" />
+                <SimpleGridColumn T="Employee" Field="Salary"     Title="Salary" Align="GridAlign.Right" Format="C0" />
+            </SimpleGrid>
+        </div>
+
+        <div>
+            <p class="demo-section__hint">Striped + Bordered</p>
+            <SimpleGrid T="Employee" Items="_short" Striped Bordered ShowFooter="false">
+                <SimpleGridColumn T="Employee" Field="Name"       Title="Name" />
+                <SimpleGridColumn T="Employee" Field="Department" Title="Dept" />
+                <SimpleGridColumn T="Employee" Field="Salary"     Title="Salary" Align="GridAlign.Right" Format="C0" />
+            </SimpleGrid>
+        </div>
+
+        <div>
+            <p class="demo-section__hint">Dense</p>
+            <SimpleGrid T="Employee" Items="_short" Dense Hoverable ShowFooter="false">
+                <SimpleGridColumn T="Employee" Field="Name"       Title="Name" />
+                <SimpleGridColumn T="Employee" Field="Department" Title="Dept" />
+                <SimpleGridColumn T="Employee" Field="Salary"     Title="Salary" Align="GridAlign.Right" Format="C0" />
+            </SimpleGrid>
+        </div>
+
+    </div>
+</div>
+
+<!-- ══════════════════ Row click ══════════════════ -->
+<div class="demo-section">
+    <h3>Row click &amp; custom template</h3>
+    <p class="demo-section__hint">Pass <code>OnRowClick</code> to react to row selection. Use <code>&lt;Template&gt;</code> for rich cell content.</p>
+
+    <div class="sg-click-demo">
+        <SimpleGrid T="Employee" Items="_employees" Hoverable
+                    OnRowClick="EventCallback.Factory.Create<Employee>(this, OnEmployeeClicked)"
+                    RowCssClass="@(e => _selected?.Name == e.Name ? "sg-row--selected" : null)">
+            <SimpleGridColumn T="Employee" Field="Name" Title="Employee">
+                <Template Context="emp">
+                    <div class="sg-name-cell">
+                        <span class="sg-avatar">@emp.Name[0]</span>
+                        <div>
+                            <div class="sg-name-cell__name">@emp.Name</div>
+                            <div class="sg-name-cell__dept">@emp.Department</div>
+                        </div>
+                    </div>
+                </Template>
+            </SimpleGridColumn>
+            <SimpleGridColumn T="Employee" Field="HireDate" Title="Hired"   Format="MMM yyyy" />
+            <SimpleGridColumn T="Employee" Field="Salary"   Title="Salary"  Align="GridAlign.Right" Format="C0" />
+            <SimpleGridColumn T="Employee" Field="IsActive" Title="Status"  Align="GridAlign.Center" Sortable="false">
+                <Template Context="emp">
+                    <span class="cb-badge @(emp.IsActive ? "cb-badge--success" : "cb-badge--secondary")">
+                        @(emp.IsActive ? "Active" : "Inactive")
+                    </span>
+                </Template>
+            </SimpleGridColumn>
+        </SimpleGrid>
+
+        @if (_selected is not null)
+        {
+            <div class="sg-detail-card">
+                <div class="sg-detail-card__header">Selected employee</div>
+                <dl class="sg-detail-card__body">
+                    <dt>Name</dt>       <dd>@_selected.Name</dd>
+                    <dt>Department</dt> <dd>@_selected.Department</dd>
+                    <dt>Hired</dt>      <dd>@_selected.HireDate.ToString("dd MMM yyyy")</dd>
+                    <dt>Salary</dt>     <dd>@_selected.Salary.ToString("C0")</dd>
+                    <dt>Status</dt>     <dd>@(_selected.IsActive ? "Active" : "Inactive")</dd>
+                </dl>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- ══════════════════ Empty state ══════════════════ -->
+<div class="demo-section">
+    <h3>Empty state</h3>
+    <SimpleGrid T="Employee" Items="@(Array.Empty<Employee>())" EmptyMessage="No employees found." ShowFooter="false">
+        <SimpleGridColumn T="Employee" Field="Name"       Title="Name" />
+        <SimpleGridColumn T="Employee" Field="Department" Title="Department" />
+    </SimpleGrid>
+</div>
+
+<!-- ══════════════════ Usage ══════════════════ -->
+<div class="demo-section">
+    <h3>Usage</h3>
+    <CodeSample Code="@_code" />
+</div>
+
+<style>
+.sg-variant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    gap: 1.5rem;
+}
+.sg-click-demo {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.25rem;
+    align-items: start;
+}
+@@media (max-width: 700px) { .sg-click-demo { grid-template-columns: 1fr; } }
+
+.sg-row--selected .cb-sg__td { background: color-mix(in srgb, var(--cb-primary) 10%, transparent) !important; }
+
+.sg-name-cell { display: flex; align-items: center; gap: 0.6rem; }
+.sg-avatar {
+    width: 1.8rem; height: 1.8rem; border-radius: 50%;
+    background: var(--cb-primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+}
+.sg-name-cell__name { font-weight: 600; font-size: 0.85rem; }
+.sg-name-cell__dept { font-size: 0.75rem; color: var(--cb-text-muted); }
+
+.sg-detail-card {
+    border: 1.5px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    overflow: hidden;
+    min-width: 14rem;
+    font-size: 0.85rem;
+}
+.sg-detail-card__header {
+    padding: 0.5rem 0.75rem;
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--cb-surface);
+    border-bottom: 1px solid var(--cb-border);
+    color: var(--cb-text-muted);
+}
+.sg-detail-card__body {
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 0.3rem 0.75rem; padding: 0.75rem;
+    margin: 0;
+}
+.sg-detail-card__body dt { color: var(--cb-text-muted); font-weight: 500; white-space: nowrap; }
+.sg-detail-card__body dd { margin: 0; color: var(--cb-text); }
+</style>

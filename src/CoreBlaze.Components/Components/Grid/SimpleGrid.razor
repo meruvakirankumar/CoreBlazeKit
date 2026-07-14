@@ -1,0 +1,89 @@
+@namespace CoreBlaze.Components.Grid
+@typeparam T where T : class
+@using CoreBlaze.Components.Utilities
+
+<CascadingValue Value="this" IsFixed="false">
+    @ChildContent
+</CascadingValue>
+
+@if (_ready)
+{
+    <div class="cb-sg-wrapper @CssClass">
+        @if (!string.IsNullOrEmpty(Title))
+        {
+            <div class="cb-sg-toolbar">
+                <span class="cb-sg-title">@Title</span>
+            </div>
+        }
+
+        <div class="cb-sg-scroll">
+            <table class="cb-simple-grid @(Striped ? "cb-sg--striped" : null) @(Bordered ? "cb-sg--bordered" : null) @(Hoverable ? "cb-sg--hoverable" : null) @(Dense ? "cb-sg--dense" : null)">
+                <thead>
+                    <tr>
+                        @foreach (var col in _visibleCols)
+                        {
+                            <th class="cb-sg__th @AlignClass(col)"
+                                style="@(col.Width != null ? $"width:{col.Width}" : null)"
+                                @onclick="() => ToggleSort(col)">
+                                @if (col.HeaderTemplate is not null)
+                                {
+                                    @col.HeaderTemplate
+                                }
+                                else
+                                {
+                                    <span>@(col.Title ?? col.Field)</span>
+                                }
+                                @if (col.Sortable)
+                                {
+                                    <span class="cb-sg__sort-icon @SortIconClass(col)" aria-hidden="true"></span>
+                                }
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!_sorted.Any())
+                    {
+                        <tr>
+                            <td colspan="@_visibleCols.Count" class="cb-sg__empty">
+                                @(EmptyContent ?? (RenderFragment)(b =>
+                                {
+                                    b.AddContent(0, EmptyMessage ?? "No records found.");
+                                }))
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in _sorted)
+                        {
+                            <tr class="cb-sg__row @(RowCssClass?.Invoke(item))"
+                                @onclick="() => RowClicked(item)">
+                                @foreach (var col in _visibleCols)
+                                {
+                                    <td class="cb-sg__td @AlignClass(col)">
+                                        @if (col.Template is not null)
+                                        {
+                                            @col.Template(item)
+                                        }
+                                        else
+                                        {
+                                            @GetValue(col, item)
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (ShowFooter && _sorted.Any())
+        {
+            <div class="cb-sg-footer">
+                <span>@_sorted.Count row@(_sorted.Count != 1 ? "s" : "")</span>
+            </div>
+        }
+    </div>
+}

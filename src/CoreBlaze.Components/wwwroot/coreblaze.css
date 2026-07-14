@@ -978,9 +978,12 @@
 }
 
 /* Size scale — can also be set via --cb-spin-size inline style */
-.cb-spinner--small  { --cb-spin-size: 1rem;  --cb-spin-border: 2px; }
-.cb-spinner--medium { --cb-spin-size: 2rem;  --cb-spin-border: 3px; }
-.cb-spinner--large  { --cb-spin-size: 3rem;  --cb-spin-border: 4px; }
+.cb-spinner--xsmall  { --cb-spin-size: 0.5rem; --cb-spin-border: 1px; }
+.cb-spinner--small   { --cb-spin-size: 1rem;   --cb-spin-border: 2px; }
+.cb-spinner--medium  { --cb-spin-size: 2rem;   --cb-spin-border: 3px; }
+.cb-spinner--large   { --cb-spin-size: 3rem;   --cb-spin-border: 4px; }
+.cb-spinner--xlarge  { --cb-spin-size: 4.5rem; --cb-spin-border: 5px; }
+.cb-spinner--xxlarge { --cb-spin-size: 6rem;   --cb-spin-border: 6px; }
 
 /* Inner container — houses the rings + centre overlay */
 .cb-spinner__inner {

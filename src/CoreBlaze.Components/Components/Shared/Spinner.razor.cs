@@ -57,7 +57,16 @@ public partial class Spinner : ComponentBase
 
     // ----- Computed properties -------------------------------------------------
 
-    private string SizeClass => Size.ToString().ToLowerInvariant();
+    private string SizeClass => Size switch
+    {
+        SpinnerSize.XSmall  => "xsmall",
+        SpinnerSize.Small   => "small",
+        SpinnerSize.Medium  => "medium",
+        SpinnerSize.Large   => "large",
+        SpinnerSize.XLarge  => "xlarge",
+        SpinnerSize.XXLarge => "xxlarge",
+        _                   => "medium",
+    };
     private string VariantClass => Variant.ToString().ToLowerInvariant();
 
     private int ActualRingCount => RingCount > 0 ? RingCount : Variant switch
@@ -74,8 +83,11 @@ public partial class Spinner : ComponentBase
     /// <summary>CSS custom properties that convey the size to the isolated stylesheet.</summary>
     private string? _sizeVars => Size switch
     {
+        SpinnerSize.XSmall => "--cb-spin-size:0.5rem; --cb-spin-border:1px",
         SpinnerSize.Small  => "--cb-spin-size:1rem;   --cb-spin-border:2px",
         SpinnerSize.Large  => "--cb-spin-size:3rem;   --cb-spin-border:4px",
+        SpinnerSize.XLarge => "--cb-spin-size:4.5rem; --cb-spin-border:5px",
+        SpinnerSize.XXLarge=> "--cb-spin-size:6rem;   --cb-spin-border:6px",
         _                  => "--cb-spin-size:2rem;   --cb-spin-border:3px",
     };
 

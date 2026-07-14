@@ -1,9 +1,9 @@
 name: Publish to NuGet
 
 # Triggers:
-#   1. When you push a version tag  →  git tag v0.2.0 && git push origin v0.2.0
-#   2. When you publish a GitHub Release
-#   3. Manual dispatch from the Actions tab (for re-runs or hotfixes)
+#   1. Push a version tag  →  git tag v0.2.0 && git push origin v0.2.0
+#   2. Publish a GitHub Release from the UI
+#   3. Manual run from the Actions tab
 on:
   push:
     tags:
@@ -13,22 +13,37 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Package version to publish (e.g. 0.2.0)'
+        description: 'Package version (e.g. 0.2.0) — leave blank to read from csproj'
         required: false
+
+# Prevent two publish runs overlapping on the same ref
+concurrency:
+  group: nuget-publish-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build-test-publish:
     name: Build · Test · Pack · Push
     runs-on: ubuntu-latest
 
+    # "nuget-prod" is a GitHub Environment that you create under
+    # Settings → Environments.  Add yourself as a required reviewer
+    # so every publish needs your manual approval.
+    environment: nuget-prod
+
+    # NUGET_API_KEY is read from the environment's secret store —
+    # it never appears as a CLI argument (visible in logs / ps output).
+    env:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
     steps:
       # ── Checkout ──────────────────────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # full history needed for SourceLink
+          fetch-depth: 0   # full history needed for SourceLink
 
-      # ── .NET setup ────────────────────────────────────────────────────
+      # ── .NET 8 ────────────────────────────────────────────────────────
       - name: Set up .NET 8
         uses: actions/setup-dotnet@v4
         with:
@@ -46,20 +61,23 @@ jobs:
       - name: Run tests
         run: dotnet test --configuration Release --no-build --verbosity minimal
 
-      # ── Determine version ─────────────────────────────────────────────
-      # Uses the git tag (v0.2.0 → 0.2.0), the Release tag, or the manual input.
+      # ── Resolve version ───────────────────────────────────────────────
+      # Priority: manual input → git tag → csproj value
       - name: Resolve package version
         id: version
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.version }}" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && \
+             [ -n "${{ github.event.inputs.version }}" ]; then
             echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
-          elif [ "${{ github.event_name }}" = "release" ]; then
+          elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
           else
-            echo "VERSION=$(grep -m1 '<Version>' src/CoreBlaze.Components/CoreBlaze.Components.csproj | sed 's/.*<Version>\(.*\)<\/Version>.*/\1/')" >> $GITHUB_OUTPUT
+            VER=$(grep -m1 '<Version>' \
+              src/CoreBlaze.Components/CoreBlaze.Components.csproj \
+              | sed 's/.*<Version>\(.*\)<\/Version>.*/\1/')
+            echo "VERSION=$VER" >> $GITHUB_OUTPUT
           fi
+          echo "Resolved version: $(cat $GITHUB_OUTPUT | grep VERSION | cut -d= -f2)"
 
       # ── Pack ──────────────────────────────────────────────────────────
       - name: Pack NuGet packages
@@ -75,22 +93,26 @@ jobs:
       - name: List generated packages
         run: ls -lh ./nupkg
 
-      # ── Upload as artifact (useful for inspecting before publish) ─────
-      - name: Upload packages as artifact
+      # ── Upload artifact (inspect before it goes live) ─────────────────
+      - name: Upload as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nuget-packages-${{ steps.version.outputs.VERSION }}
+          name: nuget-${{ steps.version.outputs.VERSION }}
           path: ./nupkg/*.nupkg
-          retention-days: 7
+          retention-days: 14
 
-      # ── Push to NuGet.org ─────────────────────────────────────────────
-      - name: Push to NuGet.org
+      # ── Push .nupkg ───────────────────────────────────────────────────
+      # NUGET_API_KEY is set as an env var above — NOT passed via --api-key
+      # so it never appears in process arguments or GitHub's log output.
+      - name: Push .nupkg to NuGet.org
         run: |
           dotnet nuget push "./nupkg/*.nupkg" \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
+
+      # ── Push .snupkg (symbols) ────────────────────────────────────────
+      - name: Push .snupkg symbols to NuGet.org
+        run: |
           dotnet nuget push "./nupkg/*.snupkg" \
-            --api-key ${{ secrets.NUGET_API_KEY }} \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate

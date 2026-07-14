@@ -31,37 +31,32 @@ public partial class SimpleGridDemo : ComponentBase
     private const string _code = """
         @using CoreBlaze.Components.Grid
 
-        <!-- Basic usage -->
-        <SimpleGrid Items="_employees" Striped Hoverable Title="Employees">
-            <Columns>
-                <SimpleGridColumn Field="Name"       Title="Name" />
-                <SimpleGridColumn Field="Department" Title="Department" />
-                <SimpleGridColumn Field="HireDate"   Title="Hire date" Format="dd MMM yyyy" />
-                <SimpleGridColumn Field="Salary"     Title="Salary" Align="GridAlign.Right" Format="C0" />
-                <SimpleGridColumn Field="IsActive"   Title="Active" Sortable="false">
-                    <Template Context="emp">
-                        <span class="@(emp.IsActive ? "badge bg-success" : "badge bg-secondary")">
-                            @(emp.IsActive ? "Active" : "Inactive")
-                        </span>
-                    </Template>
-                </SimpleGridColumn>
-            </Columns>
+        <!-- Basic usage — columns go directly inside SimpleGrid (no wrapper needed) -->
+        <SimpleGrid T="Employee" Items="_employees" Striped Hoverable Title="Employees">
+            <SimpleGridColumn T="Employee" Field="Name"       Title="Name" />
+            <SimpleGridColumn T="Employee" Field="Department" Title="Department" />
+            <SimpleGridColumn T="Employee" Field="HireDate"   Title="Hire date" Format="dd MMM yyyy" />
+            <SimpleGridColumn T="Employee" Field="Salary"     Title="Salary" Align="GridAlign.Right" Format="C0" />
+            <SimpleGridColumn T="Employee" Field="IsActive"   Title="Active" Sortable="false">
+                <Template Context="emp">
+                    <span class="@(emp.IsActive ? "badge bg-success" : "badge bg-secondary")">
+                        @(emp.IsActive ? "Active" : "Inactive")
+                    </span>
+                </Template>
+            </SimpleGridColumn>
         </SimpleGrid>
 
-        <!-- Row click -->
-        <SimpleGrid Items="_employees" Hoverable OnRowClick="OnEmployeeClicked">
-            <Columns>
-                <SimpleGridColumn Field="Name"   Title="Name" />
-                <SimpleGridColumn Field="Salary" Title="Salary" Align="GridAlign.Right" Format="C0" />
-            </Columns>
+        <!-- Row click callback -->
+        <SimpleGrid T="Employee" Items="_employees" Hoverable
+                    OnRowClick="EventCallback.Factory.Create<Employee>(this, OnEmployeeClicked)">
+            <SimpleGridColumn T="Employee" Field="Name"   Title="Name" />
+            <SimpleGridColumn T="Employee" Field="Salary" Title="Salary" Align="GridAlign.Right" Format="C0" />
         </SimpleGrid>
 
-        <!-- Dense + bordered -->
-        <SimpleGrid Items="_employees" Dense Bordered>
-            <Columns>
-                <SimpleGridColumn Field="Name"   Title="Name" />
-                <SimpleGridColumn Field="Salary" Title="Salary" Align="GridAlign.Right" Format="C0" />
-            </Columns>
+        <!-- Dense + bordered variant -->
+        <SimpleGrid T="Employee" Items="_employees" Dense Bordered>
+            <SimpleGridColumn T="Employee" Field="Name"   Title="Name" />
+            <SimpleGridColumn T="Employee" Field="Salary" Title="Salary" Align="GridAlign.Right" Format="C0" />
         </SimpleGrid>
         """;
 }

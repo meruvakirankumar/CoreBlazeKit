@@ -100,24 +100,23 @@ public partial class GridDemo : ComponentBase
         </DataGrid>
 
         @code {
-            List<Person> _people = LoadPeople();
+            List<Person> _people = new(); // populate from your service / API
             IReadOnlyList<Person>? _selected;
-
-            // Toggle these to demo different modes
             GridEditMode _mode = GridEditMode.Row;
             GridSelectionMode _selection = GridSelectionMode.Multiple;
-
             DataGrid<Person>? _grid;
             readonly string[] _departments = { "Engineering", "Sales", "Marketing", "Finance", "Support" };
 
             void OnRowSaved(GridRowEventArgs<Person> e)
             {
                 var verb = e.State == RowState.Added ? "added" : "updated";
-                Toasts.Success($"{e.Item.Name} was {verb}.", title: $"Row {verb}");
+                // persist to database, show notification, etc.
             }
 
             void OnRowDeleted(GridRowEventArgs<Person> e)
-                => Toasts.Warning($"{e.Item.Name} was deleted.", title: "Row deleted");
+            {
+                // remove from database, show notification, etc.
+            }
         }
         """;
 }

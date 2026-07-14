@@ -15,12 +15,14 @@
     <IsPackable>true</IsPackable>
     <PackageId>CoreBlaze.Components</PackageId>
     <Version>0.1.0</Version>
-    <Authors>Your Name</Authors>
-    <Company>Your Company</Company>
+    <Authors>Kiran Meruva</Authors>
+    <Company>Kiran Meruva</Company>
     <Product>CoreBlaze</Product>
-    <Description>A lightweight, extensible Blazor component library featuring reusable input controls and a powerful DataGrid.</Description>
-    <PackageTags>blazor;components;razor;ui;datagrid;inputs</PackageTags>
+    <Description>A lightweight, production-ready Blazor component library for .NET 8. Includes 7 form inputs, DataGrid (sort/filter/page/edit/export), SimpleGrid, EditableGrid, Spinner (6 sizes, 4 variants), Tabs, Toast, Modal, LoadingOverlay and more. Compatible with Blazor Server, WebAssembly, and Blazor Web App (InteractiveAuto).</Description>
+    <PackageTags>blazor;components;razor;rcl;ui;datagrid;grid;inputs;textinput;dropdown;multiselect;spinner;toast;modal;tabs;blazor-server;blazor-wasm;dotnet8</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/meruvakirankumar/CoreBlazeKit</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/meruvakirankumar/CoreBlazeKit.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <IncludeSymbols>true</IncludeSymbols>

@@ -4,6 +4,21 @@ namespace CoreBlaze.Demo.Components.Pages;
 
 public partial class CustomLayoutsDemo : ComponentBase
 {
+    // ── Centered ────────────────────────────────────────────────────────────
+
+    private const string _centeredHtml = """
+        <div class="page-centered">
+            <header class="page-centered__topbar">
+                <strong>MyApp</strong>
+            </header>
+            <main class="page-centered__body">
+                <div class="page-centered__panel">
+                    <h2>Sign in</h2>
+                    <!-- form / card content here -->
+                </div>
+            </main>
+        </div>
+        """;
     private const string _centeredCss = """
         .page-centered {
             min-height: 100vh;
@@ -118,5 +133,50 @@ public partial class CustomLayoutsDemo : ComponentBase
             .page-master-detail { flex-direction: column; }
             .page-master-detail__list { width: 100%; height: 40vh; }
         }
+        """;
+
+    // ── HTML structure snippets ──────────────────────────────────────────────
+
+    private const string _splitHtml = """
+        <div class="page-split">
+            <aside class="page-split__left">
+                <h1>Brand</h1>
+                <p>Your tagline here.</p>
+            </aside>
+            <main class="page-split__right">
+                <div style="max-width:28rem; width:100%">
+                    <!-- form / content here -->
+                </div>
+            </main>
+        </div>
+        """;
+
+    private const string _dashHtml = """
+        <div class="page-dashboard">
+            <div class="page-dashboard__stats">
+                <div class="stat-card"><!-- stat 1 --></div>
+                <div class="stat-card"><!-- stat 2 --></div>
+                <div class="stat-card"><!-- stat 3 --></div>
+                <div class="stat-card"><!-- stat 4 --></div>
+            </div>
+            <div class="page-dashboard__charts">
+                <div class="chart-card"><!-- main chart (2 cols wide) --></div>
+                <div class="chart-card"><!-- secondary chart --></div>
+            </div>
+            <div class="page-dashboard__table">
+                <div class="table-card"><!-- data table --></div>
+            </div>
+        </div>
+        """;
+
+    private const string _masterDetailHtml = """
+        <div class="page-master-detail">
+            <nav class="page-master-detail__list">
+                <!-- list of items, e.g. <SimpleGrid> or <ul> -->
+            </nav>
+            <section class="page-master-detail__detail">
+                <!-- detail panel content -->
+            </section>
+        </div>
         """;
 }

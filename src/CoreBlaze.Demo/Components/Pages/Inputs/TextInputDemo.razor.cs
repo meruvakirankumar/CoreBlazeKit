@@ -58,7 +58,10 @@ public partial class TextInputDemo : ComponentBase
             string? _password;
             string? _url;
 
-            void OnNameChanged(string? v) => Console.WriteLine($"Name: {v}");
+            void OnNameChanged(string? v)
+            {
+                // use the new value — e.g. validate, filter, update state
+            }
         }
         """;
 }

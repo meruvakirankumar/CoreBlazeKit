@@ -1,0 +1,96 @@
+name: Publish to NuGet
+
+# Triggers:
+#   1. When you push a version tag  →  git tag v0.2.0 && git push origin v0.2.0
+#   2. When you publish a GitHub Release
+#   3. Manual dispatch from the Actions tab (for re-runs or hotfixes)
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version to publish (e.g. 0.2.0)'
+        required: false
+
+jobs:
+  build-test-publish:
+    name: Build · Test · Pack · Push
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── Checkout ──────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history needed for SourceLink
+
+      # ── .NET setup ────────────────────────────────────────────────────
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # ── Restore ───────────────────────────────────────────────────────
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # ── Build ─────────────────────────────────────────────────────────
+      - name: Build (Release)
+        run: dotnet build --configuration Release --no-restore
+
+      # ── Test ──────────────────────────────────────────────────────────
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build --verbosity minimal
+
+      # ── Determine version ─────────────────────────────────────────────
+      # Uses the git tag (v0.2.0 → 0.2.0), the Release tag, or the manual input.
+      - name: Resolve package version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" = "release" ]; then
+            echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=$(grep -m1 '<Version>' src/CoreBlaze.Components/CoreBlaze.Components.csproj | sed 's/.*<Version>\(.*\)<\/Version>.*/\1/')" >> $GITHUB_OUTPUT
+          fi
+
+      # ── Pack ──────────────────────────────────────────────────────────
+      - name: Pack NuGet packages
+        run: |
+          dotnet pack src/CoreBlaze.Components/CoreBlaze.Components.csproj \
+            --configuration Release \
+            --no-build \
+            --output ./nupkg \
+            /p:Version=${{ steps.version.outputs.VERSION }} \
+            /p:ContinuousIntegrationBuild=true
+
+      # ── List packages ─────────────────────────────────────────────────
+      - name: List generated packages
+        run: ls -lh ./nupkg
+
+      # ── Upload as artifact (useful for inspecting before publish) ─────
+      - name: Upload packages as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages-${{ steps.version.outputs.VERSION }}
+          path: ./nupkg/*.nupkg
+          retention-days: 7
+
+      # ── Push to NuGet.org ─────────────────────────────────────────────
+      - name: Push to NuGet.org
+        run: |
+          dotnet nuget push "./nupkg/*.nupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+          dotnet nuget push "./nupkg/*.snupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate

@@ -121,7 +121,8 @@ public partial class DataGrid<T> : ComponentBase where T : class
 
     private bool CanExportCsv => ExportFormats.HasFlag(GridExportFormat.Csv);
     private bool CanExportExcel => ExportFormats.HasFlag(GridExportFormat.Excel);
-    private bool CanExportPdf => ExportFormats.HasFlag(GridExportFormat.Pdf);
+    // PDF export uses QuestPDF which requires native font access — not available in WebAssembly.
+    private bool CanExportPdf => ExportFormats.HasFlag(GridExportFormat.Pdf) && !OperatingSystem.IsBrowser();
     private bool AnyExportEnabled => ExportFormats != GridExportFormat.None;
 
     /// <summary>Enables the Add-row command.</summary>
@@ -750,6 +751,10 @@ public partial class DataGrid<T> : ComponentBase where T : class
     /// </summary>
     public async Task ExportPdfAsync()
     {
+        if (OperatingSystem.IsBrowser())
+            throw new NotSupportedException(
+                "PDF export is not available in WebAssembly. Use CSV or Excel export instead.");
+
         var columnDefs = ExportableColumns();
         if (columnDefs.Count == 0) return;
 

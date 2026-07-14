@@ -110,6 +110,39 @@
         </div>
     </section>
 
+    <!-- ══ Blazor compatibility ══════════════════════════════════════ -->
+    <section class="gs-section">
+        <h2 class="gs-section__title">Blazor Server &amp; WebAssembly compatibility</h2>
+        <p class="gs-section__desc">
+            CoreBlaze targets <code>net8.0</code> and works in <strong>Blazor Server</strong>,
+            <strong>Blazor WebAssembly</strong>, and the unified <strong>Blazor Web App</strong> model
+            — including <code>InteractiveAuto</code> render mode. No server-specific APIs are used.
+        </p>
+        <div class="gs-compat-table">
+            <table>
+                <thead>
+                    <tr><th>Feature</th><th>Blazor Server</th><th>WebAssembly</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>All input components</td><td class="gs-compat-yes">✓</td><td class="gs-compat-yes">✓</td></tr>
+                    <tr><td>DataGrid (display, edit, filter, sort, page)</td><td class="gs-compat-yes">✓</td><td class="gs-compat-yes">✓</td></tr>
+                    <tr><td>DataGrid CSV export</td><td class="gs-compat-yes">✓</td><td class="gs-compat-yes">✓</td></tr>
+                    <tr><td>DataGrid Excel export (ClosedXML)</td><td class="gs-compat-yes">✓</td><td class="gs-compat-yes">✓</td></tr>
+                    <tr><td>DataGrid PDF export (QuestPDF)</td><td class="gs-compat-yes">✓</td><td class="gs-compat-no">✗ — requires server-side rendering</td></tr>
+                    <tr><td>Spinner, Tabs, Modal, Toast, SimpleGrid, EditableGrid</td><td class="gs-compat-yes">✓</td><td class="gs-compat-yes">✓</td></tr>
+                    <tr><td>Clipboard copy</td><td class="gs-compat-yes">✓</td><td class="gs-compat-yes">✓</td></tr>
+                    <tr><td>Dark mode / ThemeService</td><td class="gs-compat-yes">✓</td><td class="gs-compat-yes">✓</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="gs-section__desc" style="margin-top:0.75rem">
+            <strong>Note:</strong> PDF export uses <a href="https://www.questpdf.com" target="_blank">QuestPDF</a> which
+            requires native font rendering unavailable in the WASM sandbox.
+            The PDF button is automatically hidden when running in WebAssembly.
+            Use CSV or Excel export in that environment, or generate PDFs server-side via an API endpoint.
+        </p>
+    </section>
+
     <!-- ══ Component catalog ═════════════════════════════════════════ -->
     <section class="gs-section">
         <h2 class="gs-section__title">Component catalog</h2>
@@ -625,6 +658,19 @@ function gsCopy(btn, text) {
 /* ── Two-col layout ───────────────────────────────────────────── */
 .gs-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
 @@media (max-width: 640px) { .gs-two-col { grid-template-columns: 1fr; } }
+
+/* ── Compatibility table ──────────────────────────────────────── */
+.gs-compat-table { border: 1px solid var(--app-border); border-radius: 0.6rem; overflow: hidden; }
+.gs-compat-table table { width: 100%; border-collapse: collapse; }
+.gs-compat-table th {
+    padding: 0.45rem 0.9rem; text-align: left; font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--app-text-mute);
+    border-bottom: 1px solid var(--app-border); background: var(--app-surface);
+}
+.gs-compat-table td { padding: 0.5rem 0.9rem; font-size: 0.83rem; border-bottom: 1px solid var(--app-border); color: var(--app-text); }
+.gs-compat-table tbody tr:last-child td { border-bottom: 0; }
+.gs-compat-yes { color: #10b981; font-weight: 700; }
+.gs-compat-no  { color: #ef4444; font-weight: 600; }
 
 /* ── Token table ──────────────────────────────────────────────── */
 .gs-token-table { border: 1px solid var(--app-border); border-radius: 0.6rem; overflow: hidden; }

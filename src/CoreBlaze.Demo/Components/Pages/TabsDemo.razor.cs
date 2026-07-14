@@ -26,13 +26,28 @@ public partial class TabsDemo : ComponentBase
         </Tabs>
 
         <!-- Two-way bind: drive the active tab from C# -->
-        <button @onclick='() => _activeTab = "Details"'>Go to Details</button>
+        <!-- Buttons stay highlighted to show which tab is active -->
+        @foreach (var label in new[] { "Overview", "Details", "History" })
+        {
+            <button class="btn btn-sm @(_activeTab == label ? "btn-primary" : "btn-outline-secondary")"
+                    @onclick="() => _activeTab = label">
+                @label
+            </button>
+        }
 
-        <Tabs @bind-ActiveTitle="_activeTab" OnTabChanged="OnTabChanged">
+        <Tabs @bind-ActiveTitle="_activeTab">
             <ChildContent>
                 <Tab Title="Overview"><p>Overview content.</p></Tab>
                 <Tab Title="Details"><p>Details content.</p></Tab>
-                <Tab Title="History"><p>Switched to: @_activeTab</p></Tab>
+                <Tab Title="History"><p>Active: <strong>@_activeTab</strong></p></Tab>
+            </ChildContent>
+        </Tabs>
+
+        <!-- OnTabChanged fires on every tab switch (optional) -->
+        <Tabs OnTabChanged="OnTabChanged">
+            <ChildContent>
+                <Tab Title="A"><p>Tab A.</p></Tab>
+                <Tab Title="B"><p>Tab B.</p></Tab>
             </ChildContent>
         </Tabs>
 
@@ -41,7 +56,7 @@ public partial class TabsDemo : ComponentBase
 
             void OnTabChanged(Tab tab)
             {
-                // fires whenever the active tab changes
+                // tab.Title holds the newly active tab's title
             }
         }
         """;

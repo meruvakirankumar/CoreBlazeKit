@@ -1,4 +1,4 @@
-name: Publish to NuGet
+ï»¿name: Publish to NuGet
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Package version (e.g. 0.2.0) — leave blank to read from csproj'
+        description: 'Package version (e.g. 0.2.0) - leave blank to read from csproj'
         required: false
 
 concurrency:
@@ -18,11 +18,13 @@ concurrency:
 
 jobs:
   build-test-publish:
-    name: Build · Test · Pack · Push
+    name: Build, Test, Pack, Push
     runs-on: ubuntu-latest
     environment: nuget-prod
 
+    # Required for NuGet Trusted Publishing (OIDC - no API key needed)
     permissions:
+      id-token: write
       contents: read
 
     steps:
@@ -79,16 +81,24 @@ jobs:
           path: ./nupkg/*.nupkg
           retention-days: 14
 
+      # NuGet Trusted Publishing (OIDC) - exchanges GitHub OIDC token
+      # for a short-lived NuGet API key. No secrets required.
+      - name: NuGet login (OIDC)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: kirankumar_meruva
+
       - name: Push .nupkg to NuGet.org
         run: |
           dotnet nuget push "./nupkg/*.nupkg" \
-            --api-key "${{ secrets.NUGET_API_KEY }}" \
+            --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
 
       - name: Push .snupkg symbols to NuGet.org
         run: |
           dotnet nuget push "./nupkg/*.snupkg" \
-            --api-key "${{ secrets.NUGET_API_KEY }}" \
+            --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate

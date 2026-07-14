@@ -33,6 +33,18 @@ public partial class GridDemo : ComponentBase
         Toasts.Warning($"{e.Item.Name} was deleted.", title: "Row deleted");
     }
 
+    private void OnRowAdded(Person p)
+        => Toasts.Info($"Add mode started.", title: "New row");
+
+    private void OnRowEdited(Person p)
+        => _lastEvent = $"Editing: {p.Name}";
+
+    private void OnCancelled()
+        => Toasts.Info("Edit cancelled.", title: "Cancelled");
+
+    private void OnCellEdited(GridCellEditEventArgs<Person> args)
+        => _lastEvent = $"Cell edit: {args.Field} on {args.Item.Name}";
+
     private const string _code = """
         @using CoreBlaze.Components.Grid
         @using CoreBlaze.Components.Models

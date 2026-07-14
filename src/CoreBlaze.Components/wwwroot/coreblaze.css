@@ -901,6 +901,23 @@
     box-shadow: 0 0 0 2px var(--cb-primary-ring);
 }
 
+/* Validation error state for edit cells */
+.cb-grid__td--invalid .cb-grid__edit-input {
+    border-color: var(--cb-danger);
+}
+.cb-grid__td--invalid .cb-grid__edit-input:focus {
+    box-shadow: 0 0 0 2px var(--cb-danger-ring);
+}
+.cb-grid__edit-error {
+    font-size: 0.75rem;
+    color: var(--cb-danger);
+    margin-top: 0.2rem;
+    line-height: 1.3;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.2rem;
+}
+
 /* Pager */
 .cb-pager {
     display: flex;

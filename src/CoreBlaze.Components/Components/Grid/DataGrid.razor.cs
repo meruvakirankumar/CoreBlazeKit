@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -35,6 +36,9 @@ public partial class DataGrid<T> : ComponentBase where T : class
     private readonly HashSet<T> _selected = new();
     private readonly HashSet<string> _hiddenFields = new(StringComparer.Ordinal);
     private readonly List<SortDescriptor> _sortChain = new();
+
+    // Validation error messages keyed by property name
+    private readonly Dictionary<string, string[]> _editErrors = new(StringComparer.Ordinal);
 
     private IReadOnlyList<T> _pageData = Array.Empty<T>();
     private int _filteredCount;
@@ -137,6 +141,45 @@ public partial class DataGrid<T> : ComponentBase where T : class
 
     /// <summary>Fires when a row is deleted.</summary>
     [Parameter] public EventCallback<GridRowEventArgs<T>> OnRowDeleted { get; set; }
+
+    // ── New event callbacks ──────────────────────────────────────────────────
+
+    /// <summary>Fires when Add mode begins (before the user fills the new row).</summary>
+    [Parameter] public EventCallback<T> OnRowAdd { get; set; }
+
+    /// <summary>Fires when a row enters Edit mode.</summary>
+    [Parameter] public EventCallback<T> OnRowEdit { get; set; }
+
+    /// <summary>Fires when the user cancels an in-progress edit.</summary>
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    /// <summary>Fires when a single cell enters edit mode (Cell-edit mode only).</summary>
+    [Parameter] public EventCallback<GridCellEditEventArgs<T>> OnCellEdit { get; set; }
+
+    // ── Command-button templates ─────────────────────────────────────────────
+
+    /// <summary>Custom template for the Add button in the toolbar. Receives no context.</summary>
+    [Parameter] public RenderFragment? AddButtonTemplate { get; set; }
+
+    /// <summary>Custom template for the Edit button in each row. Receives the row item.</summary>
+    [Parameter] public RenderFragment<T>? EditButtonTemplate { get; set; }
+
+    /// <summary>Custom template for the Save button shown while editing. Receives the row item.</summary>
+    [Parameter] public RenderFragment<T>? SaveButtonTemplate { get; set; }
+
+    /// <summary>Custom template for the Cancel button shown while editing. Receives no context.</summary>
+    [Parameter] public RenderFragment? CancelButtonTemplate { get; set; }
+
+    /// <summary>Custom template for the Delete button in each row. Receives the row item.</summary>
+    [Parameter] public RenderFragment<T>? DeleteButtonTemplate { get; set; }
+
+    // ── Bulk delete ──────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Shows a "Delete selected" button in the toolbar when rows are selected.
+    /// Requires <see cref="SelectionMode"/> to be non-<see cref="GridSelectionMode.None"/>.
+    /// </summary>
+    [Parameter] public bool AllowBulkDelete { get; set; }
 
     /// <summary>Tracked persistence state for a row (or <see cref="RowState.Unchanged"/>).</summary>
     public RowState GetRowState(T item) => _rowStates.TryGetValue(item, out var s) ? s : RowState.Unchanged;
@@ -323,7 +366,7 @@ public partial class DataGrid<T> : ComponentBase where T : class
         {
             var needle = _search;
             var searchable = _columns
-                .Where(c => c.Field is not null && c.Sortable)
+                .Where(c => c.Field is not null && c.Filterable)
                 .Select(c => PropertyAccessor.TryFor(typeof(T), c.Field!))
                 .Where(a => a is not null)
                 .Select(a => a!.Value.Getter)
@@ -438,35 +481,83 @@ public partial class DataGrid<T> : ComponentBase where T : class
     private Task NotifySelectionAsync()
         => SelectedItemsChanged.InvokeAsync(_selected.ToList());
 
+    // ---------- Bulk delete ----------
+
+    /// <summary>
+    /// Deletes all currently selected rows at once.
+    /// Fires <see cref="OnRowDeleted"/> for each removed item.
+    /// </summary>
+    public async Task BulkDeleteAsync()
+    {
+        if (_selected.Count == 0) return;
+
+        var toDelete = _selected.ToList();
+        _selected.Clear();
+
+        foreach (var item in toDelete)
+        {
+            _rowStates[item] = RowState.Deleted;
+
+            if (Data is IList<T> list)
+                list.Remove(item);
+
+            await OnRowDeleted.InvokeAsync(new GridRowEventArgs<T>(item, RowState.Deleted));
+        }
+
+        if (Data is not IList<T> && Data is not null)
+        {
+            var copy = Data.Where(x => !toDelete.Contains(x)).ToList();
+            await DataChanged.InvokeAsync(copy);
+        }
+
+        RecomputePage();
+    }
+
+    // ---------- Validation helpers ----------
+
+    private bool HasEditError(GridColumn<T>? col)
+        => col?.Field is not null && _editErrors.ContainsKey(col.Field);
+
+    private IEnumerable<string> GetEditErrors(GridColumn<T>? col)
+        => col?.Field is not null && _editErrors.TryGetValue(col.Field, out var msgs)
+            ? msgs
+            : Enumerable.Empty<string>();
+
     // ---------- Editing ----------
 
-    private void BeginAdd()
+    private async Task BeginAdd()
     {
         var newItem = Activator.CreateInstance<T>();
         _editingItem = newItem;
         _originalCopy = null;
         _isAdding = true;
+        _editErrors.Clear();
         _rowStates[newItem] = RowState.Added;
+        await OnRowAdd.InvokeAsync(newItem);
     }
 
-    private void BeginEdit(T item)
+    private async Task BeginEdit(T item)
     {
         _editingItem = item;
         _originalCopy = CloneShallow(item);
         _isAdding = false;
         _editingColumn = null;
+        _editErrors.Clear();
         if (!_rowStates.ContainsKey(item))
             _rowStates[item] = RowState.Modified;
+        await OnRowEdit.InvokeAsync(item);
     }
 
-    private void OnCellDoubleClicked(T item, GridColumn<T> col)
+    private async Task OnCellDoubleClicked(T item, GridColumn<T> col)
     {
         if (EditMode != GridEditMode.Cell || _isAdding || !AllowEdit) return;
         _editingItem = item;
         _editingColumn = col;
         _originalCopy = CloneShallow(item);
+        _editErrors.Clear();
         if (!_rowStates.ContainsKey(item))
             _rowStates[item] = RowState.Modified;
+        await OnCellEdit.InvokeAsync(new GridCellEditEventArgs<T>(item, col.Field));
     }
 
     private async Task OnEditKeyDown(KeyboardEventArgs args)
@@ -480,6 +571,31 @@ public partial class DataGrid<T> : ComponentBase where T : class
     {
         if (_editingItem is null) return;
 
+        // ── DataAnnotations validation ───────────────────────────────────────
+        var validationContext = new ValidationContext(_editingItem);
+        var validationResults = new List<ValidationResult>();
+        bool isValid = Validator.TryValidateObject(
+            _editingItem, validationContext, validationResults, validateAllProperties: true);
+
+        if (!isValid)
+        {
+            _editErrors.Clear();
+            foreach (var vr in validationResults)
+            {
+                var msg = vr.ErrorMessage ?? "Invalid";
+                foreach (var memberName in vr.MemberNames)
+                {
+                    if (!_editErrors.TryGetValue(memberName, out var existing))
+                        _editErrors[memberName] = new[] { msg };
+                    else
+                        _editErrors[memberName] = existing.Append(msg).ToArray();
+                }
+            }
+            return; // stay in edit mode — errors are now displayed inline
+        }
+
+        _editErrors.Clear();
+        // ── Commit ──────────────────────────────────────────────────────────
         var state = _isAdding ? RowState.Added : RowState.Modified;
         _rowStates[_editingItem] = state;
 
@@ -515,11 +631,12 @@ public partial class DataGrid<T> : ComponentBase where T : class
                 _rowStates.Remove(_editingItem);
         }
 
+        _editErrors.Clear();
         _editingItem = null;
         _editingColumn = null;
         _originalCopy = null;
         _isAdding = false;
-        await Task.CompletedTask;
+        await OnCancel.InvokeAsync();
         RecomputePage();
     }
 

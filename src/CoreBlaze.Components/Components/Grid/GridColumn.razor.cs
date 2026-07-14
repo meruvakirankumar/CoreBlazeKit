@@ -23,6 +23,9 @@ public partial class GridColumn<T> : ComponentBase, IDisposable where T : class
     /// <summary>When <see langword="true"/> the header shows a sort toggle (shift-click adds a secondary sort).</summary>
     [Parameter] public bool Sortable { get; set; } = true;
 
+    /// <summary>When <see langword="true"/> a filter input appears in the filter row and the column is included in global search.</summary>
+    [Parameter] public bool Filterable { get; set; } = true;
+
     /// <summary>When <see langword="true"/> the column is visible. Set to <see langword="false"/> to hide by default.</summary>
     [Parameter] public bool Visible { get; set; } = true;
 

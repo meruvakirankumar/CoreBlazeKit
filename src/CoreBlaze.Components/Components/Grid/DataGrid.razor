@@ -134,11 +134,27 @@
                     }
                 </div>
             }
+            @if (AllowBulkDelete && SelectionMode != GridSelectionMode.None && _selected.Count > 0 && !IsEditing)
+            {
+                <button type="button"
+                        class="cb-grid__btn cb-grid__btn--danger"
+                        @onclick="BulkDeleteAsync"
+                        title="Delete @_selected.Count selected row(s)">
+                    🗑 Delete (@_selected.Count)
+                </button>
+            }
             @if (AllowAdd && !IsEditing)
             {
-                <button type="button" class="cb-grid__btn cb-grid__btn--primary" @onclick="BeginAdd">
-                    + Add
-                </button>
+                @if (AddButtonTemplate is not null)
+                {
+                    <span @onclick="BeginAdd">@AddButtonTemplate</span>
+                }
+                else
+                {
+                    <button type="button" class="cb-grid__btn cb-grid__btn--primary" @onclick="BeginAdd">
+                        + Add
+                    </button>
+                }
             }
             @Toolbar
         </div>
@@ -208,7 +224,7 @@
                         @foreach (var col in visibleCols)
                         {
                             <th>
-                                @if (col.Field is not null && col.Sortable)
+                                @if (col.Field is not null && col.Filterable)
                                 {
                                     <input type="text"
                                            class="cb-grid__filter-input"
@@ -290,11 +306,18 @@
                                 (EditMode == GridEditMode.Row && isEditing) ||
                                 (EditMode == GridEditMode.Cell && ReferenceEquals(item, _editingItem) && col == _editingColumn);
 
-                            <td class="cb-grid__td"
+                            <td class="cb-grid__td @(HasEditError(col) ? "cb-grid__td--invalid" : null)"
                                 @ondblclick="() => OnCellDoubleClicked(item, col)">
                                 @if (isCellEditing)
                                 {
                                     @RenderEditCell(col, item)
+                                    @if (HasEditError(col))
+                                    {
+                                        foreach (var err in GetEditErrors(col))
+                                        {
+                                            <div class="cb-grid__edit-error">⚠ @err</div>
+                                        }
+                                    }
                                 }
                                 else
                                 {
@@ -308,18 +331,46 @@
                             <td class="cb-grid__td--commands">
                                 @if (isEditing)
                                 {
-                                    <button type="button" class="cb-grid__btn cb-grid__btn--primary" @onclick="CommitAsync" title="Save (Enter)">Save</button>
-                                    <button type="button" class="cb-grid__btn" @onclick="CancelAsync" title="Cancel (Esc)">Cancel</button>
+                                    @if (SaveButtonTemplate is not null)
+                                    {
+                                        <span @onclick="CommitAsync">@SaveButtonTemplate(item)</span>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="cb-grid__btn cb-grid__btn--primary" @onclick="CommitAsync" title="Save (Enter)">Save</button>
+                                    }
+                                    @if (CancelButtonTemplate is not null)
+                                    {
+                                        <span @onclick="CancelAsync">@CancelButtonTemplate</span>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="cb-grid__btn" @onclick="CancelAsync" title="Cancel (Esc)">Cancel</button>
+                                    }
                                 }
                                 else
                                 {
                                     @if (AllowEdit)
                                     {
-                                        <button type="button" class="cb-grid__btn" @onclick="() => BeginEdit(item)">Edit</button>
+                                        @if (EditButtonTemplate is not null)
+                                        {
+                                            <span @onclick="() => BeginEdit(item)">@EditButtonTemplate(item)</span>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="cb-grid__btn" @onclick="() => BeginEdit(item)">Edit</button>
+                                        }
                                     }
                                     @if (AllowDelete)
                                     {
-                                        <button type="button" class="cb-grid__btn cb-grid__btn--danger" @onclick="() => DeleteAsync(item)">Delete</button>
+                                        @if (DeleteButtonTemplate is not null)
+                                        {
+                                            <span @onclick="() => DeleteAsync(item)">@DeleteButtonTemplate(item)</span>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="cb-grid__btn cb-grid__btn--danger" @onclick="() => DeleteAsync(item)">Delete</button>
+                                        }
                                     }
                                 }
                             </td>

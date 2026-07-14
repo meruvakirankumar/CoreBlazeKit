@@ -5,9 +5,8 @@
 <div class="page-header">
     <h1>DataGrid&lt;T&gt;</h1>
     <p class="text-muted">
-        Sortable headers, per-column filter row, global search, paging, row-/cell-mode
-        editing, row selection, and CSV export. Row highlights reflect tracked
-        <code>RowState</code>.
+        Sortable, filterable, searchable, editable — with DataAnnotations validation,
+        bulk delete, custom button templates, and CSV / Excel / PDF export.
     </p>
 </div>
 
@@ -39,7 +38,8 @@
             </div>
         </div>
         <div class="text-muted">
-            Try searching, sorting, editing (Enter to save, Esc to cancel), or exporting.
+            Try editing — leave Name empty or set Age &gt; 130 to see validation.
+            Shift+click headers for multi-sort. Select rows and use "Delete".
         </div>
     </div>
 
@@ -48,6 +48,7 @@
               Title="People"
               Data="_people"
               EditMode="_mode"
+              AllowBulkDelete="true"
               SelectionMode="_selection"
               @bind-SelectedItems="_selectedPeople"
               EnableGlobalSearch="true"
@@ -57,7 +58,11 @@
               PdfTitle="People — CoreBlaze Demo"
               PageSize="5"
               OnRowSaved="OnRowSaved"
-              OnRowDeleted="OnRowDeleted">
+              OnRowDeleted="OnRowDeleted"
+              OnRowAdd="OnRowAdded"
+              OnRowEdit="OnRowEdited"
+              OnCancel="OnCancelled"
+              OnCellEdit="OnCellEdited">
         <Columns>
             <GridColumn T="Person" Field="Id"         Title="ID"         Width="4rem" Editable="false" />
             <GridColumn T="Person" Field="Name"       Title="Name" />

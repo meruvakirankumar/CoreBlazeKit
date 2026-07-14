@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Package version (e.g. 0.2.0) — leave blank to read from csproj'
+        description: 'Package version (e.g. 0.2.0) � leave blank to read from csproj'
         required: false
 
 concurrency:
@@ -18,15 +18,11 @@ concurrency:
 
 jobs:
   build-test-publish:
-    name: Build · Test · Pack · Push
+    name: Build � Test � Pack � Push
     runs-on: ubuntu-latest
-
-    # Must match the Environment name you set in NuGet Trusted Publishers form
     environment: nuget-prod
 
-    # Required for NuGet Trusted Publishing (OIDC — no API key secret needed)
     permissions:
-      id-token: write
       contents: read
 
     steps:
@@ -83,44 +79,16 @@ jobs:
           path: ./nupkg/*.nupkg
           retention-days: 14
 
-      # ── Trusted Publishing (OIDC) ─────────────────────────────────────
-      # NuGet.org validates the GitHub OIDC token against the Trusted Publisher
-      # policy you configured at nuget.org/account/TrustedPublishers.
-      # No NUGET_API_KEY secret is required.
-      - name: Get NuGet API token via Trusted Publishing (OIDC)
-        id: nuget-token
-        run: |
-          # Request GitHub OIDC token with NuGet audience
-          OIDC_TOKEN=$(curl -sS \
-            -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=api://AzureADTokenExchange" \
-            | jq -r '.value')
-
-          # Exchange OIDC token for a short-lived NuGet API key
-          NUGET_KEY=$(curl -sS -X POST \
-            "https://www.nuget.org/api/v1/authenticate" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $OIDC_TOKEN" \
-            | jq -r '.apiKey // empty')
-
-          if [ -z "$NUGET_KEY" ]; then
-            echo "::error::Failed to obtain NuGet token via Trusted Publishing. Check the policy on nuget.org."
-            exit 1
-          fi
-
-          echo "::add-mask::$NUGET_KEY"
-          echo "api_key=$NUGET_KEY" >> "$GITHUB_OUTPUT"
-
       - name: Push .nupkg to NuGet.org
         run: |
           dotnet nuget push "./nupkg/*.nupkg" \
-            --api-key "${{ steps.nuget-token.outputs.api_key }}" \
+            --api-key "${{ secrets.NUGET_API_KEY }}" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
 
       - name: Push .snupkg symbols to NuGet.org
         run: |
           dotnet nuget push "./nupkg/*.snupkg" \
-            --api-key "${{ steps.nuget-token.outputs.api_key }}" \
+            --api-key "${{ secrets.NUGET_API_KEY }}" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate

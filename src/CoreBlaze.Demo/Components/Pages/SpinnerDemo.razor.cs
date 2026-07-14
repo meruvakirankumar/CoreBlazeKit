@@ -11,9 +11,7 @@ public partial class SpinnerDemo : ComponentBase
     private int _ringCount = 0;          // 0 = auto
     private string _centerIcon = string.Empty;
     private string _centerImage = string.Empty;
-    private string _color1 = "#4f46e5";  // indigo
-    private string _color2 = "#22d3ee";  // cyan
-    private string _color3 = string.Empty;
+    private List<string> _colors = new() { "#4f46e5", "#22d3ee" };
     private bool _useColors = false;
     private string _label = string.Empty;
 
@@ -28,16 +26,24 @@ public partial class SpinnerDemo : ComponentBase
         _isLoading = false;
     }
 
-    private IReadOnlyList<string>? ResolvedColors
+    private IReadOnlyList<string>? ResolvedColors =>
+        _useColors ? _colors.Where(c => !string.IsNullOrWhiteSpace(c)).ToList() : null;
+
+    private void AddColor()
     {
-        get
-        {
-            if (!_useColors) return null;
-            var list = new List<string> { _color1 };
-            if (!string.IsNullOrWhiteSpace(_color2)) list.Add(_color2);
-            if (!string.IsNullOrWhiteSpace(_color3)) list.Add(_color3);
-            return list;
-        }
+        _colors.Add("#a855f7");
+    }
+
+    private void RemoveColor(int index)
+    {
+        if (_colors.Count > 1)
+            _colors.RemoveAt(index);
+    }
+
+    private void UpdateColor(int index, string value)
+    {
+        if (index >= 0 && index < _colors.Count)
+            _colors[index] = value;
     }
 
     private int ResolvedRingCount => _ringCount > 0 ? _ringCount : _variant switch

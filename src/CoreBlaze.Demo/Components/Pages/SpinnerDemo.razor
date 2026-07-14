@@ -83,55 +83,43 @@
             </div>
         </div>
 
-        <!-- Colours — always visible, 3 swatches -->
+        <!-- Colours — dynamic swatches -->
         <div class="sp-group">
-            <div class="sp-group__label">Colours</div>
-            <div class="sp-colors">
-                <div class="sp-color-swatch">
-                    <input type="color" class="sp-color-input"
-                           value="@_color1"
-                           title="Colour 1 (primary / gradient start)"
-                           @oninput="e => _color1 = e.Value?.ToString() ?? _color1" />
-                    <span class="sp-color-label">
-                        <span class="sp-color-dot" style="background:@_color1"></span>
-                        <code>@_color1</code>
-                    </span>
-                </div>
-                <div class="sp-color-swatch">
-                    <input type="color" class="sp-color-input"
-                           value="@_color2"
-                           title="Colour 2 (ring 2 / gradient end)"
-                           @oninput="e => _color2 = e.Value?.ToString() ?? _color2" />
-                    <span class="sp-color-label">
-                        <span class="sp-color-dot" style="background:@_color2"></span>
-                        <code>@_color2</code>
-                    </span>
-                </div>
-                <div class="sp-color-swatch">
-                    @{
-                        var c3display = string.IsNullOrEmpty(_color3) ? "#ec4899" : _color3;
-                    }
-                    <input type="color" class="sp-color-input"
-                           value="@c3display"
-                           title="Colour 3 (optional third ring)"
-                           @oninput="e => _color3 = e.Value?.ToString() ?? _color3" />
-                    <span class="sp-color-label">
-                        <span class="sp-color-dot" style="background:@c3display; opacity:@(string.IsNullOrEmpty(_color3) ? "0.35" : "1")"></span>
-                        <code class="@(string.IsNullOrEmpty(_color3) ? "sp-color-inactive" : null)">
-                            @(string.IsNullOrEmpty(_color3) ? "optional" : _color3)
-                        </code>
-                    </span>
-                    @if (!string.IsNullOrEmpty(_color3))
-                    {
-                        <button class="sp-clear-btn" title="Clear colour 3" @onclick="() => _color3 = string.Empty">×</button>
-                    }
-                </div>
+            <div class="sp-group__label">
+                Colours
+                <span class="sp-group__badge">@_colors.Count</span>
             </div>
-            <label class="sp-toggle-row">
-                <input type="checkbox" @bind="_useColors" />
-                <span class="sp-toggle-text">Apply custom colours</span>
-                <span class="sp-toggle-hint">Uncheck to use the default indigo theme</span>
-            </label>
+            <div class="sp-colors">
+                @for (int i = 0; i < _colors.Count; i++)
+                {
+                    var idx = i;
+                    var hex = _colors[idx];
+                    <div class="sp-color-swatch">
+                        <input type="color" class="sp-color-input"
+                               value="@hex"
+                               title="Colour @(idx + 1)"
+                               @oninput="e => UpdateColor(idx, e.Value?.ToString() ?? hex)" />
+                        <span class="sp-color-label">
+                            <span class="sp-color-dot" style="background:@hex"></span>
+                            <code>@hex</code>
+                        </span>
+                        @if (_colors.Count > 1)
+                        {
+                            <button class="sp-clear-btn" title="Remove colour @(idx + 1)" @onclick="() => RemoveColor(idx)">×</button>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="sp-colors-footer">
+                <button type="button" class="sp-add-color-btn" @onclick="AddColor" title="Add another colour">
+                    + Add colour
+                </button>
+                <label class="sp-toggle-row">
+                    <input type="checkbox" @bind="_useColors" />
+                    <span class="sp-toggle-text">Apply custom colours</span>
+                    <span class="sp-toggle-hint">Uncheck to use the default indigo theme</span>
+                </label>
+            </div>
         </div>
 
     </div>
@@ -387,7 +375,33 @@
 .sp-color-label { display: flex; align-items: center; gap: 0.4rem; min-width: 0; flex: 1; }
 .sp-color-dot { width: 0.65rem; height: 0.65rem; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1); }
 .sp-color-label code { font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; }
-.sp-color-inactive { opacity: 0.45; font-style: italic; }
+.sp-colors-footer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sp-add-color-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    border: 1.5px dashed var(--app-border);
+    background: transparent;
+    color: var(--app-brand);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+}
+.sp-add-color-btn:hover {
+    background: color-mix(in srgb, var(--app-brand) 8%, transparent);
+    border-color: var(--app-brand);
+}
 
 .sp-clear-btn {
     position: absolute;

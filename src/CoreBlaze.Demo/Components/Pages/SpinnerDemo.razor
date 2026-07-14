@@ -5,223 +5,239 @@
 <div class="page-header">
     <h1>Spinner</h1>
     <p class="text-muted">
-        Four animation variants — Ring, Pulse, Wave, and Gradient — with custom colours,
+        Four animation variants — Ring, Pulse, Wave, Gradient — with custom colours,
         a centre image / icon / markup slot, and a <code>LoadingOverlay</code> wrapper.
     </p>
 </div>
 
-<div class="row g-3">
+<!-- ══════════════════ Interactive Playground ══════════════════ -->
+<div class="sp-playground demo-section">
 
-    <!-- ── Live playground ─────────────────────────────────── -->
-    <div class="col-lg-8">
-        <div class="demo-section">
-            <h3>Interactive playground</h3>
+    <!-- Left: controls panel -->
+    <div class="sp-controls">
 
-            <!-- Controls -->
-            <div class="spinner-controls">
-                <div class="spinner-controls__row">
-                    <div>
-                        <div class="spinner-controls__label">Variant</div>
-                        <div class="segmented">
-                            @foreach (var v in Enum.GetValues<SpinnerVariant>())
-                            {
-                                <button type="button"
-                                        class="segmented__btn @(_variant == v ? "segmented__btn--active" : null)"
-                                        @onclick="() => _variant = v">
-                                    @v
-                                </button>
-                            }
-                        </div>
-                    </div>
-                    <div>
-                        <div class="spinner-controls__label">Size</div>
-                        <div class="segmented">
-                            @foreach (var s in Enum.GetValues<SpinnerSize>())
-                            {
-                                <button type="button"
-                                        class="segmented__btn @(_size == s ? "segmented__btn--active" : null)"
-                                        @onclick="() => _size = s">
-                                    @s
-                                </button>
-                            }
-                        </div>
-                    </div>
-                </div>
-
-                <div class="spinner-controls__row">
-                    <div class="spinner-controls__field">
-                        <label class="spinner-controls__label">Rings (0 = auto: @ResolvedRingCount)</label>
-                        <input type="range" min="0" max="6" step="1" value="@_ringCount"
-                               @oninput="e => _ringCount = int.Parse(e.Value!.ToString()!)" />
-                    </div>
-                    <div class="spinner-controls__field">
-                        <label class="spinner-controls__label">Label</label>
-                        <input type="text" class="cb-input__control"
-                               placeholder="Optional…"
-                               value="@_label"
-                               @oninput="e => _label = e.Value?.ToString() ?? string.Empty" />
-                    </div>
-                </div>
-
-                <div class="spinner-controls__row">
-                    <div class="spinner-controls__field">
-                        <label class="spinner-controls__label">Centre icon (emoji / symbol)</label>
-                        <input type="text" class="cb-input__control"
-                               placeholder="e.g. 🔒 or ✓"
-                               value="@_centerIcon"
-                               @oninput="e => _centerIcon = e.Value?.ToString() ?? string.Empty" />
-                    </div>
-                    <div class="spinner-controls__field">
-                        <label class="spinner-controls__label">Centre image URL</label>
-                        <input type="url" class="cb-input__control"
-                               placeholder="https://…"
-                               value="@_centerImage"
-                               @oninput="e => _centerImage = e.Value?.ToString() ?? string.Empty" />
-                    </div>
-                </div>
-
-                <!-- Colour controls -->
-                <div class="spinner-controls__row">
-                    <div class="d-flex align-items-center gap-2">
-                        <input type="checkbox" id="useColors" @bind="_useColors" />
-                        <label for="useColors" class="spinner-controls__label mb-0">Custom colours</label>
-                    </div>
-                </div>
-                @if (_useColors)
+        <!-- Variant -->
+        <div class="sp-group">
+            <div class="sp-group__label">Animation variant</div>
+            <div class="sp-chip-row">
+                @foreach (var v in Enum.GetValues<SpinnerVariant>())
                 {
-                    <div class="spinner-controls__row">
-                        <div class="spinner-controls__field">
-                            <label class="spinner-controls__label">Colour 1 (ring 1 / gradient start)</label>
-                            <div class="d-flex gap-2 align-items-center">
-                                <input type="color" value="@_color1"
-                                       @oninput="e => _color1 = e.Value?.ToString() ?? _color1"
-                                       style="width:2.5rem;height:2rem;border-radius:.35rem;border:1px solid var(--app-border);cursor:pointer" />
-                                <code class="flex-grow-1">@_color1</code>
-                            </div>
-                        </div>
-                        <div class="spinner-controls__field">
-                            <label class="spinner-controls__label">Colour 2 (ring 2 / gradient end)</label>
-                            <div class="d-flex gap-2 align-items-center">
-                                <input type="color" value="@_color2"
-                                       @oninput="e => _color2 = e.Value?.ToString() ?? _color2"
-                                       style="width:2.5rem;height:2rem;border-radius:.35rem;border:1px solid var(--app-border);cursor:pointer" />
-                                <code class="flex-grow-1">@_color2</code>
-                            </div>
-                        </div>
-                        <div class="spinner-controls__field">
-                            <label class="spinner-controls__label">Colour 3 (ring 3 — optional)</label>
-                            <div class="d-flex gap-2 align-items-center">
-                                <input type="color" value="@(string.IsNullOrEmpty(_color3) ? "#ec4899" : _color3)"
-                                       @oninput="e => _color3 = e.Value?.ToString() ?? _color3"
-                                       style="width:2.5rem;height:2rem;border-radius:.35rem;border:1px solid var(--app-border);cursor:pointer" />
-                                <code class="flex-grow-1">@(string.IsNullOrEmpty(_color3) ? "—" : _color3)</code>
-                                <button class="cb-grid__linkbtn" @onclick="() => _color3 = string.Empty">clear</button>
-                            </div>
-                        </div>
-                    </div>
+                    <button type="button"
+                            class="sp-chip @(_variant == v ? "sp-chip--active" : null)"
+                            @onclick="() => _variant = v">
+                        @v
+                    </button>
                 }
             </div>
+        </div>
 
-            <!-- Preview -->
-            <div class="spinner-preview">
-                <Spinner Size="_size"
-                         Variant="_variant"
-                         RingCount="_ringCount"
-                         Colors="ResolvedColors"
-                         Label="@(string.IsNullOrEmpty(_label) ? null : _label)"
-                         CenterIcon="@(string.IsNullOrEmpty(_centerIcon) ? null : _centerIcon)"
-                         CenterImage="@(string.IsNullOrEmpty(_centerImage) ? null : _centerImage)" />
+        <!-- Size -->
+        <div class="sp-group">
+            <div class="sp-group__label">Size</div>
+            <div class="sp-chip-row">
+                @foreach (var s in Enum.GetValues<SpinnerSize>())
+                {
+                    <button type="button"
+                            class="sp-chip @(_size == s ? "sp-chip--active" : null)"
+                            @onclick="() => _size = s">
+                        @s
+                    </button>
+                }
             </div>
         </div>
 
-        <!-- Gallery of presets -->
-        <div class="demo-section">
-            <h3>Presets gallery</h3>
-            <p class="demo-section__hint">Click any card to copy the markup.</p>
+        <!-- Ring count -->
+        <div class="sp-group">
+            <div class="sp-group__label">
+                Ring count
+                <span class="sp-group__badge">@(ResolvedRingCount) ring@(ResolvedRingCount != 1 ? "s" : "")</span>
+            </div>
+            <div class="sp-slider-row">
+                <span class="sp-slider-tick">0</span>
+                <input type="range" class="sp-slider" min="0" max="6" step="1"
+                       value="@_ringCount"
+                       @oninput="e => _ringCount = int.Parse(e.Value!.ToString()!)" />
+                <span class="sp-slider-tick">6</span>
+            </div>
+            <div class="sp-slider-hint">0 = auto (1 ring for Ring/Gradient, 3 for Pulse/Wave)</div>
+        </div>
 
-            <div class="spinner-gallery">
-                <!-- Ring – default -->
-                <div class="spinner-gallery__card">
-                    <Spinner Size="SpinnerSize.Large" />
-                    <span class="spinner-gallery__name">Ring</span>
+        <!-- Centre content -->
+        <div class="sp-group">
+            <div class="sp-group__label">Centre content</div>
+            <div class="sp-field-row">
+                <div class="sp-field">
+                    <label class="sp-field__label">Icon / emoji</label>
+                    <input type="text" class="sp-input"
+                           placeholder="e.g. 🔒  ✓  ★"
+                           value="@_centerIcon"
+                           @oninput="e => _centerIcon = e.Value?.ToString() ?? string.Empty" />
                 </div>
-
-                <!-- Ring – custom colour -->
-                <div class="spinner-gallery__card">
-                    <Spinner Size="SpinnerSize.Large"
-                             Colors="@(new[] { "#f59e0b" })" />
-                    <span class="spinner-gallery__name">Ring amber</span>
-                </div>
-
-                <!-- Pulse – tri-colour -->
-                <div class="spinner-gallery__card">
-                    <Spinner Size="SpinnerSize.Large"
-                             Variant="SpinnerVariant.Pulse"
-                             Colors="@(new[] { "#4f46e5", "#a855f7", "#ec4899" })"
-                             RingCount="3" />
-                    <span class="spinner-gallery__name">Pulse tri</span>
-                </div>
-
-                <!-- Pulse – icon centre -->
-                <div class="spinner-gallery__card">
-                    <Spinner Size="SpinnerSize.Large"
-                             Variant="SpinnerVariant.Pulse"
-                             Colors="@(new[] { "#10b981" })"
-                             CenterIcon="✓" />
-                    <span class="spinner-gallery__name">Pulse ✓</span>
-                </div>
-
-                <!-- Wave – bicolour -->
-                <div class="spinner-gallery__card">
-                    <Spinner Size="SpinnerSize.Large"
-                             Variant="SpinnerVariant.Wave"
-                             Colors="@(new[] { "#06b6d4", "#3b82f6" })"
-                             RingCount="4" />
-                    <span class="spinner-gallery__name">Wave ocean</span>
-                </div>
-
-                <!-- Wave – icon -->
-                <div class="spinner-gallery__card">
-                    <Spinner Size="SpinnerSize.Large"
-                             Variant="SpinnerVariant.Wave"
-                             Colors="@(new[] { "#f59e0b", "#f97316" })"
-                             CenterIcon="🔥"
-                             RingCount="3" />
-                    <span class="spinner-gallery__name">Wave 🔥</span>
-                </div>
-
-                <!-- Gradient – indigo→cyan -->
-                <div class="spinner-gallery__card">
-                    <Spinner Size="SpinnerSize.Large"
-                             Variant="SpinnerVariant.Gradient"
-                             Colors="@(new[] { "#4f46e5", "#22d3ee" })" />
-                    <span class="spinner-gallery__name">Gradient cool</span>
-                </div>
-
-                <!-- Gradient – warm + icon -->
-                <div class="spinner-gallery__card">
-                    <Spinner Size="SpinnerSize.Large"
-                             Variant="SpinnerVariant.Gradient"
-                             Colors="@(new[] { "#ef4444", "#f59e0b" })"
-                             CenterIcon="🌟" />
-                    <span class="spinner-gallery__name">Gradient warm</span>
+                <div class="sp-field">
+                    <label class="sp-field__label">Label text</label>
+                    <input type="text" class="sp-input"
+                           placeholder="e.g. Loading…"
+                           value="@_label"
+                           @oninput="e => _label = e.Value?.ToString() ?? string.Empty" />
                 </div>
             </div>
         </div>
+
+        <!-- Colours — always visible, 3 swatches -->
+        <div class="sp-group">
+            <div class="sp-group__label">Colours</div>
+            <div class="sp-colors">
+                <div class="sp-color-swatch">
+                    <input type="color" class="sp-color-input"
+                           value="@_color1"
+                           title="Colour 1 (primary / gradient start)"
+                           @oninput="e => _color1 = e.Value?.ToString() ?? _color1" />
+                    <span class="sp-color-label">
+                        <span class="sp-color-dot" style="background:@_color1"></span>
+                        <code>@_color1</code>
+                    </span>
+                </div>
+                <div class="sp-color-swatch">
+                    <input type="color" class="sp-color-input"
+                           value="@_color2"
+                           title="Colour 2 (ring 2 / gradient end)"
+                           @oninput="e => _color2 = e.Value?.ToString() ?? _color2" />
+                    <span class="sp-color-label">
+                        <span class="sp-color-dot" style="background:@_color2"></span>
+                        <code>@_color2</code>
+                    </span>
+                </div>
+                <div class="sp-color-swatch">
+                    @{
+                        var c3display = string.IsNullOrEmpty(_color3) ? "#ec4899" : _color3;
+                    }
+                    <input type="color" class="sp-color-input"
+                           value="@c3display"
+                           title="Colour 3 (optional third ring)"
+                           @oninput="e => _color3 = e.Value?.ToString() ?? _color3" />
+                    <span class="sp-color-label">
+                        <span class="sp-color-dot" style="background:@c3display; opacity:@(string.IsNullOrEmpty(_color3) ? "0.35" : "1")"></span>
+                        <code class="@(string.IsNullOrEmpty(_color3) ? "sp-color-inactive" : null)">
+                            @(string.IsNullOrEmpty(_color3) ? "optional" : _color3)
+                        </code>
+                    </span>
+                    @if (!string.IsNullOrEmpty(_color3))
+                    {
+                        <button class="sp-clear-btn" title="Clear colour 3" @onclick="() => _color3 = string.Empty">×</button>
+                    }
+                </div>
+            </div>
+            <label class="sp-toggle-row">
+                <input type="checkbox" @bind="_useColors" />
+                <span class="sp-toggle-text">Apply custom colours</span>
+                <span class="sp-toggle-hint">Uncheck to use the default indigo theme</span>
+            </label>
+        </div>
+
     </div>
 
-    <!-- ── Sidebar: overlay + API + code ──────────────────── -->
-    <div class="col-lg-4">
+    <!-- Right: live preview -->
+    <div class="sp-preview-panel">
+        <div class="sp-preview-label">Live preview</div>
+        <div class="sp-preview-stage">
+            <Spinner Size="_size"
+                     Variant="_variant"
+                     RingCount="_ringCount"
+                     Colors="_useColors ? ResolvedColors : null"
+                     Label="@(string.IsNullOrEmpty(_label) ? null : _label)"
+                     CenterIcon="@(string.IsNullOrEmpty(_centerIcon) ? null : _centerIcon)"
+                     CenterImage="@(string.IsNullOrEmpty(_centerImage) ? null : _centerImage)" />
+        </div>
+        <div class="sp-preview-meta">
+            <span>@_variant</span>
+            <span>·</span>
+            <span>@_size</span>
+            @if (_useColors && ResolvedColors is { Count: > 0 })
+            {
+                <span>·</span>
+                <span>@ResolvedColors!.Count colour@(ResolvedColors.Count != 1 ? "s" : "")</span>
+            }
+            @if (!string.IsNullOrEmpty(_centerIcon))
+            {
+                <span>·</span>
+                <span>icon: @_centerIcon</span>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ Gallery ══════════════════ -->
+<div class="demo-section">
+    <h3>Presets gallery</h3>
+    <p class="demo-section__hint">Eight ready-to-use configurations spanning every variant.</p>
+
+    <div class="spinner-gallery">
+        <div class="spinner-gallery__card">
+            <Spinner Size="SpinnerSize.Large" />
+            <span class="spinner-gallery__name">Ring — default</span>
+        </div>
+        <div class="spinner-gallery__card">
+            <Spinner Size="SpinnerSize.Large" Colors="@(new[] { "#f59e0b" })" />
+            <span class="spinner-gallery__name">Ring amber</span>
+        </div>
+        <div class="spinner-gallery__card">
+            <Spinner Size="SpinnerSize.Large"
+                     Variant="SpinnerVariant.Pulse"
+                     Colors="@(new[] { "#4f46e5", "#a855f7", "#ec4899" })"
+                     RingCount="3" />
+            <span class="spinner-gallery__name">Pulse tri-colour</span>
+        </div>
+        <div class="spinner-gallery__card">
+            <Spinner Size="SpinnerSize.Large"
+                     Variant="SpinnerVariant.Pulse"
+                     Colors="@(new[] { "#10b981" })"
+                     CenterIcon="✓" />
+            <span class="spinner-gallery__name">Pulse ✓</span>
+        </div>
+        <div class="spinner-gallery__card">
+            <Spinner Size="SpinnerSize.Large"
+                     Variant="SpinnerVariant.Wave"
+                     Colors="@(new[] { "#06b6d4", "#3b82f6" })"
+                     RingCount="4" />
+            <span class="spinner-gallery__name">Wave ocean</span>
+        </div>
+        <div class="spinner-gallery__card">
+            <Spinner Size="SpinnerSize.Large"
+                     Variant="SpinnerVariant.Wave"
+                     Colors="@(new[] { "#f59e0b", "#f97316" })"
+                     CenterIcon="🔥"
+                     RingCount="3" />
+            <span class="spinner-gallery__name">Wave 🔥</span>
+        </div>
+        <div class="spinner-gallery__card">
+            <Spinner Size="SpinnerSize.Large"
+                     Variant="SpinnerVariant.Gradient"
+                     Colors="@(new[] { "#4f46e5", "#22d3ee" })" />
+            <span class="spinner-gallery__name">Gradient cool</span>
+        </div>
+        <div class="spinner-gallery__card">
+            <Spinner Size="SpinnerSize.Large"
+                     Variant="SpinnerVariant.Gradient"
+                     Colors="@(new[] { "#ef4444", "#f59e0b" })"
+                     CenterIcon="🌟" />
+            <span class="spinner-gallery__name">Gradient warm</span>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════ LoadingOverlay + Sidebar ══════════════════ -->
+<div class="row g-3">
+    <div class="col-lg-7">
         <div class="demo-section">
             <h3>LoadingOverlay</h3>
-            <p class="demo-section__hint">Masks any child block while an operation runs.</p>
+            <p class="demo-section__hint">Masks any child block with a blurred curtain while an async operation runs.</p>
             <LoadingOverlay IsLoading="_isLoading" LoadingText="Please wait…" SpinnerSize="SpinnerSize.Large">
-                <div class="p-3 rounded" style="background:var(--app-code-bg);min-height:5rem;border:1px solid var(--app-border)">
-                    <p class="mb-1 fw-600">Protected content</p>
-                    <p class="text-muted mb-0" style="font-size:.85rem">Cards, grids, forms — any children can live here.</p>
+                <div class="sp-overlay-content">
+                    <p><strong>Protected content area</strong></p>
+                    <p class="text-muted mb-0">Cards, forms, tables — any children can live here. They are masked while loading.</p>
                 </div>
             </LoadingOverlay>
-            <div class="mt-2">
+            <div class="mt-3">
                 <button class="btn btn-sm btn-primary" @onclick="SimulateLoadAsync" disabled="@_isLoading">
                     @if (_isLoading)
                     {
@@ -232,59 +248,222 @@
                 </button>
             </div>
         </div>
-
+    </div>
+    <div class="col-lg-5">
         <div class="demo-section">
             <h3>Usage</h3>
             <CodeSample Code="@_code" />
-        </div>
-
-        <div class="demo-section">
-            <h3>API</h3>
-            <ul class="api-list">
-                <li><code>Variant</code> — <code>Ring</code> / <code>Pulse</code> / <code>Wave</code> / <code>Gradient</code></li>
-                <li><code>Size</code> — <code>Small</code> / <code>Medium</code> / <code>Large</code></li>
-                <li><code>RingCount</code> — override ring count (0 = auto)</li>
-                <li><code>Colors</code> — <code>string[]</code> of CSS colour values</li>
-                <li><code>CenterIcon</code> — emoji / symbol in the middle</li>
-                <li><code>CenterImage</code> — URL of an image in the middle</li>
-                <li><code>CenterContent</code> — arbitrary markup slot</li>
-                <li><code>Label</code> — text below the animation</li>
-            </ul>
         </div>
     </div>
 </div>
 
 <style>
-    .spinner-controls { display: flex; flex-direction: column; gap: .85rem; margin-bottom: 1.25rem; }
-    .spinner-controls__row { display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-end; }
-    .spinner-controls__label { font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--app-text-mute); margin-bottom: .3rem; }
-    .spinner-controls__field { display: flex; flex-direction: column; flex: 1; min-width: 11rem; }
+/* ── Playground layout ──────────────────────────────────────── */
+.sp-playground {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+}
 
-    .spinner-preview {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 10rem;
-        border: 1px dashed var(--app-border);
-        border-radius: .65rem;
-        background: var(--app-code-bg);
-    }
+@@media (max-width: 860px) {
+    .sp-playground { grid-template-columns: 1fr; }
+    .sp-preview-panel { order: -1; }
+}
 
-    .spinner-gallery {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
-        gap: .75rem;
-    }
-    .spinner-gallery__card {
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        gap: .75rem; padding: 1rem .5rem;
-        background: var(--app-bg-elev);
-        border: 1px solid var(--app-border);
-        border-radius: .65rem;
-        transition: box-shadow 150ms ease, transform 150ms ease;
-        cursor: default;
-    }
-    .spinner-gallery__card:hover { box-shadow: var(--app-shadow-md); transform: translateY(-1px); }
-    .spinner-gallery__name { font-size: .75rem; color: var(--app-text-mute); text-align: center; }
-    .fw-600 { font-weight: 600; }
+/* ── Controls ───────────────────────────────────────────────── */
+.sp-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.sp-group { display: flex; flex-direction: column; gap: 0.45rem; }
+
+.sp-group__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--app-text-mute);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sp-group__badge {
+    background: color-mix(in srgb, var(--app-brand) 12%, transparent);
+    color: var(--app-brand);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+/* Chip row */
+.sp-chip-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.sp-chip {
+    padding: 0.3rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: var(--app-bg-elev);
+    border: 1.5px solid var(--app-border);
+    border-radius: 999px;
+    cursor: pointer;
+    color: var(--app-text-mute);
+    transition: all 120ms ease;
+    font-family: inherit;
+}
+.sp-chip:hover { border-color: var(--app-brand); color: var(--app-text); }
+.sp-chip--active {
+    background: var(--app-brand);
+    border-color: var(--app-brand);
+    color: #fff;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--app-brand) 35%, transparent);
+}
+
+/* Slider */
+.sp-slider-row { display: flex; align-items: center; gap: 0.5rem; }
+.sp-slider {
+    flex: 1;
+    accent-color: var(--app-brand);
+    cursor: pointer;
+}
+.sp-slider-tick { font-size: 0.75rem; color: var(--app-text-mute); width: 1rem; text-align: center; }
+.sp-slider-hint { font-size: 0.75rem; color: var(--app-text-mute); margin-top: -0.2rem; }
+
+/* Field row */
+.sp-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.sp-field { display: flex; flex-direction: column; gap: 0.25rem; }
+.sp-field__label { font-size: 0.78rem; color: var(--app-text-mute); font-weight: 500; }
+
+.sp-input {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+    font-family: inherit;
+    background: var(--app-bg-elev);
+    border: 1.5px solid var(--app-border);
+    border-radius: 0.4rem;
+    color: var(--app-text);
+    outline: none;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.sp-input:focus { border-color: var(--app-brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-brand) 18%, transparent); }
+.sp-input::placeholder { color: var(--app-text-mute); opacity: 1; }
+
+/* Colour swatches */
+.sp-colors { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+.sp-color-swatch {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--app-bg-elev);
+    border: 1.5px solid var(--app-border);
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.6rem;
+    min-width: 9rem;
+    flex: 1;
+    position: relative;
+    transition: border-color 120ms ease;
+}
+.sp-color-swatch:hover { border-color: var(--app-brand); }
+
+.sp-color-input {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.35rem;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background: none;
+    flex-shrink: 0;
+}
+.sp-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+.sp-color-input::-webkit-color-swatch { border: none; border-radius: 0.3rem; }
+
+.sp-color-label { display: flex; align-items: center; gap: 0.4rem; min-width: 0; flex: 1; }
+.sp-color-dot { width: 0.65rem; height: 0.65rem; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1); }
+.sp-color-label code { font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; }
+.sp-color-inactive { opacity: 0.45; font-style: italic; }
+
+.sp-clear-btn {
+    position: absolute;
+    top: -0.4rem;
+    right: -0.4rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: var(--app-brand);
+    color: #fff;
+    border: 0;
+    font-size: 0.7rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sp-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    margin-top: 0.25rem;
+    user-select: none;
+}
+.sp-toggle-text { font-size: 0.85rem; font-weight: 500; color: var(--app-text); }
+.sp-toggle-hint { font-size: 0.75rem; color: var(--app-text-mute); }
+
+/* ── Preview panel ──────────────────────────────────────────── */
+.sp-preview-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 18rem;
+}
+
+.sp-preview-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--app-text-mute);
+    align-self: flex-start;
+}
+
+.sp-preview-stage {
+    width: 100%;
+    min-height: 14rem;
+    background: radial-gradient(ellipse at center, color-mix(in srgb, var(--app-brand) 5%, transparent) 0%, transparent 70%),
+                var(--app-bg);
+    border: 1.5px dashed var(--app-border);
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sp-preview-meta {
+    display: flex;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--app-text-mute);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* ── Overlay content box ────────────────────────────────────── */
+.sp-overlay-content {
+    background: var(--app-code-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    min-height: 5.5rem;
+    margin-bottom: 0;
+}
 </style>

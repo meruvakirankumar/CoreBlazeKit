@@ -1,37 +1,37 @@
-# CustomBlazor
+# CoreBlaze
 
 A lightweight, extensible Blazor component library (.NET 8+) and demo application.
 
 ## Solution layout
 
 ```
-CustomBlazor.sln
+CoreBlaze.sln
 src/
-├── CustomBlazor.Components/        # Razor Class Library (NuGet-ready)
-│   ├── Base/                       # BaseInputComponent<T>, BaseComponent
-│   ├── Components/
-│   │   ├── Inputs/                 # TextInput, TextArea, NumberInput, DatePicker,
-│   │   │                           # Dropdown, MultiSelectDropdown, FileUpload
-│   │   ├── Grid/                   # DataGrid<T>, GridColumn<T>, GridCommandColumn<T>, GridPager
-│   │   └── Shared/                 # Small internal building blocks (icons, spinners, …)
-│   ├── Models/                     # Public DTOs / enums (RowState, SortDescriptor, …)
-│   ├── Services/                   # ThemeService, ValidationService, GridStateService
-│   ├── Utilities/                  # Reflection helpers, CSS merger, debouncer, JS interop
-│   ├── Styles/                     # Source styles (design tokens, SCSS)
-│   ├── wwwroot/                    # Published static assets (customblazor.css)
-│   ├── _Imports.razor
-│   └── CustomBlazor.Components.csproj
-└── CustomBlazor.Demo/              # Blazor Web App (Interactive Server) — showcase
-    ├── Components/
-    │   ├── Layout/
-    │   ├── Pages/                  # Home, Counter, Weather, InputsDemo, GridDemo,
-    │   │                           # UploadDemo, FormDemo
-    │   ├── App.razor
-    │   ├── Routes.razor
-    │   └── _Imports.razor
-    ├── wwwroot/
-    ├── Program.cs
-    └── CustomBlazor.Demo.csproj
+â”œâ”€â”€ CoreBlaze.Components/        # Razor Class Library (NuGet-ready)
+â”‚   â”œâ”€â”€ Base/                       # BaseInputComponent<T>, BaseComponent
+â”‚   â”œâ”€â”€ Components/
+â”‚   â”‚   â”œâ”€â”€ Inputs/                 # TextInput, TextArea, NumberInput, DatePicker,
+â”‚   â”‚   â”‚                           # Dropdown, MultiSelectDropdown, FileUpload
+â”‚   â”‚   â”œâ”€â”€ Grid/                   # DataGrid<T>, GridColumn<T>, GridCommandColumn<T>, GridPager
+â”‚   â”‚   â””â”€â”€ Shared/                 # Small internal building blocks (icons, spinners, â€¦)
+â”‚   â”œâ”€â”€ Models/                     # Public DTOs / enums (RowState, SortDescriptor, â€¦)
+â”‚   â”œâ”€â”€ Services/                   # ThemeService, ValidationService, GridStateService
+â”‚   â”œâ”€â”€ Utilities/                  # Reflection helpers, CSS merger, debouncer, JS interop
+â”‚   â”œâ”€â”€ Styles/                     # Source styles (design tokens, SCSS)
+â”‚   â”œâ”€â”€ wwwroot/                    # Published static assets (CoreBlaze.css)
+â”‚   â”œâ”€â”€ _Imports.razor
+â”‚   â””â”€â”€ CoreBlaze.Components.csproj
+â””â”€â”€ CoreBlaze.Demo/              # Blazor Web App (Interactive Server) â€” showcase
+    â”œâ”€â”€ Components/
+    â”‚   â”œâ”€â”€ Layout/
+    â”‚   â”œâ”€â”€ Pages/                  # Home, Counter, Weather, InputsDemo, GridDemo,
+    â”‚   â”‚                           # UploadDemo, FormDemo
+    â”‚   â”œâ”€â”€ App.razor
+    â”‚   â”œâ”€â”€ Routes.razor
+    â”‚   â””â”€â”€ _Imports.razor
+    â”œâ”€â”€ wwwroot/
+    â”œâ”€â”€ Program.cs
+    â””â”€â”€ CoreBlaze.Demo.csproj
 ```
 
 ## Prerequisites
@@ -43,7 +43,7 @@ src/
 ```powershell
 dotnet restore
 dotnet build
-dotnet run --project src/CustomBlazor.Demo
+dotnet run --project src/CoreBlaze.Demo
 ```
 
 The demo starts at the URL shown in the terminal (typically `https://localhost:5001`).
@@ -54,18 +54,18 @@ Navigate to **Inputs**, **DataGrid**, **File Upload**, or **Form Validation** in
 The demo project already references the RCL via ProjectReference:
 
 ```xml
-<ProjectReference Include="..\CustomBlazor.Components\CustomBlazor.Components.csproj" />
+<ProjectReference Include="..\CoreBlaze.Components\CoreBlaze.Components.csproj" />
 ```
 
 To use the components in another project, register any services (once implemented)
 and add the stylesheet:
 
 ```html
-<link rel="stylesheet" href="_content/CustomBlazor.Components/customblazor.css" />
+<link rel="stylesheet" href="_content/CoreBlaze.Components/CoreBlaze.css" />
 ```
 
 CSS-isolation styles for each component are automatically bundled by the Razor SDK
-into `CustomBlazor.Components.bundle.scp.css`, which is served by the consuming app.
+into `CoreBlaze.Components.bundle.scp.css`, which is served by the consuming app.
 
 ## Packing the RCL as a NuGet package
 
@@ -74,22 +74,22 @@ The RCL csproj already carries packaging metadata (`PackageId`, `Version`,
 Update those values, then run:
 
 ```powershell
-dotnet pack src/CustomBlazor.Components -c Release -o ./artifacts
+dotnet pack src/CoreBlaze.Components -c Release -o ./artifacts
 ```
 
 This produces:
 
-- `artifacts/CustomBlazor.Components.<version>.nupkg`
-- `artifacts/CustomBlazor.Components.<version>.snupkg` (debug symbols)
+- `artifacts/CoreBlaze.Components.<version>.nupkg`
+- `artifacts/CoreBlaze.Components.<version>.snupkg` (debug symbols)
 
 Publish to nuget.org (or a private feed):
 
 ```powershell
-dotnet nuget push ./artifacts/CustomBlazor.Components.<version>.nupkg `
+dotnet nuget push ./artifacts/CoreBlaze.Components.<version>.nupkg `
     --api-key <YOUR_KEY> --source https://api.nuget.org/v3/index.json
 ```
 
-Bump `<Version>` in `CustomBlazor.Components.csproj` before each publish.
+Bump `<Version>` in `CoreBlaze.Components.csproj` before each publish.
 
 ## Next steps
 

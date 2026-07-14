@@ -266,13 +266,36 @@
                         }
                         @foreach (var col in visibleCols)
                         {
-                            <td>@RenderEditCell(col, _editingItem)</td>
+                            <td class="cb-grid__td @(HasEditError(col) ? "cb-grid__td--invalid" : null)">
+                                @RenderEditCell(col, _editingItem)
+                                @if (HasEditError(col))
+                                {
+                                    foreach (var err in GetEditErrors(col))
+                                    {
+                                        <div class="cb-grid__edit-error">⚠ @err</div>
+                                    }
+                                }
+                            </td>
                         }
                         @if (ShowCommandColumn)
                         {
                             <td class="cb-grid__td--commands">
-                                <button type="button" class="cb-grid__btn cb-grid__btn--primary" @onclick="CommitAsync">Save</button>
-                                <button type="button" class="cb-grid__btn" @onclick="CancelAsync">Cancel</button>
+                                @if (SaveButtonTemplate is not null)
+                                {
+                                    <span @onclick="CommitAsync">@SaveButtonTemplate(_editingItem)</span>
+                                }
+                                else
+                                {
+                                    <button type="button" class="cb-grid__btn cb-grid__btn--primary" @onclick="CommitAsync" title="Save (Enter)">Save</button>
+                                }
+                                @if (CancelButtonTemplate is not null)
+                                {
+                                    <span @onclick="CancelAsync">@CancelButtonTemplate</span>
+                                }
+                                else
+                                {
+                                    <button type="button" class="cb-grid__btn" @onclick="CancelAsync" title="Cancel (Esc)">Cancel</button>
+                                }
                             </td>
                         }
                     </tr>

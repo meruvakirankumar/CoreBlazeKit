@@ -1,0 +1,198 @@
+@page "/overview"
+
+<PageTitle>Components</PageTitle>
+
+<div class="page-header">
+    <h1>All Components</h1>
+    <p class="text-muted">
+        Every component in CoreBlaze — organised by category.
+        Click any card to open its interactive demo and API reference.
+    </p>
+</div>
+
+<!-- ══ Inputs ══════════════════════════════════════════════════ -->
+<div class="ov-section">
+    <div class="ov-section__header">
+        <span class="ov-section__badge" style="background:linear-gradient(135deg,#6366f1,#a855f7)">Aa</span>
+        <div>
+            <h2 class="ov-section__title">Inputs</h2>
+            <p class="ov-section__desc">
+                Seven controls built on a shared <code>BaseInputComponent&lt;T&gt;</code> —
+                label, placeholder, validation and <code>@@bind-Value</code> work identically across all of them.
+            </p>
+        </div>
+    </div>
+    <div class="component-grid">
+        <a class="component-card" href="inputs/text">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#6366f1,#a855f7)">Aa</div>
+            <div class="component-card__title">TextInput</div>
+            <p class="component-card__text">Single-line text with two-way binding. Supports <code>text</code>, <code>email</code>, <code>password</code>…</p>
+        </a>
+        <a class="component-card" href="inputs/textarea">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#6366f1,#22d3ee)">≡</div>
+            <div class="component-card__title">TextArea</div>
+            <p class="component-card__text">Multi-line text with configurable rows and optional max length.</p>
+        </a>
+        <a class="component-card" href="inputs/number">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">123</div>
+            <div class="component-card__title">NumberInput&lt;T&gt;</div>
+            <p class="component-card__text">Generic over the numeric type — <code>int</code>, <code>decimal</code>, <code>double?</code>…</p>
+        </a>
+        <a class="component-card" href="inputs/date">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#10b981,#22d3ee)">📅</div>
+            <div class="component-card__title">DatePicker</div>
+            <p class="component-card__text">Native HTML5 date input bound to <code>DateTime?</code> with min/max.</p>
+        </a>
+        <a class="component-card" href="inputs/dropdown">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#f59e0b,#f97316)">▾</div>
+            <div class="component-card__title">Dropdown</div>
+            <p class="component-card__text">Single-select generic over the item and value type.</p>
+        </a>
+        <a class="component-card" href="inputs/multiselect">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#a855f7,#ec4899)">☑</div>
+            <div class="component-card__title">MultiSelect</div>
+            <p class="component-card__text">Popup panel with checkboxes, plus chip / text display modes.</p>
+        </a>
+        <a class="component-card" href="inputs/fileupload">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">☁</div>
+            <div class="component-card__title">FileUpload</div>
+            <p class="component-card__text">Drag-and-drop or click to browse. Binds to <code>IBrowserFile</code>.</p>
+        </a>
+    </div>
+</div>
+
+<!-- ══ Data ════════════════════════════════════════════════════ -->
+<div class="ov-section">
+    <div class="ov-section__header">
+        <span class="ov-section__badge" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">▤</span>
+        <div>
+            <h2 class="ov-section__title">Data</h2>
+            <p class="ov-section__desc">
+                Three grid components covering every data-display need — from a simple read-only table
+                to a full spreadsheet-style editable grid with export.
+            </p>
+        </div>
+    </div>
+    <div class="component-grid">
+        <a class="component-card" href="grid">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">▤</div>
+            <div class="component-card__title">DataGrid&lt;T&gt;</div>
+            <p class="component-card__text">Sort, filter, page, row/cell edit, bulk delete, CSV / Excel / PDF export.</p>
+        </a>
+        <a class="component-card" href="grid/simple">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#3b82f6,#6366f1)">⊞</div>
+            <div class="component-card__title">SimpleGrid&lt;T&gt;</div>
+            <p class="component-card__text">Lightweight read-only table. Column sorting, templates, row-click callback.</p>
+        </a>
+        <a class="component-card" href="grid/editable">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#6366f1,#a855f7)">✎</div>
+            <div class="component-card__title">EditableGrid&lt;T&gt;</div>
+            <p class="component-card__text">Spreadsheet-style inline editing. Auto type detection, add/delete rows.</p>
+        </a>
+        <a class="component-card" href="display">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#10b981,#06b6d4)">◈</div>
+            <div class="component-card__title">Display</div>
+            <p class="component-card__text">Badge, Avatar, Progress bar, Alert, Toggle switch and more.</p>
+        </a>
+    </div>
+</div>
+
+<!-- ══ Feedback ════════════════════════════════════════════════ -->
+<div class="ov-section">
+    <div class="ov-section__header">
+        <span class="ov-section__badge" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">🔔</span>
+        <div>
+            <h2 class="ov-section__title">Feedback</h2>
+            <p class="ov-section__desc">
+                Non-blocking toasts and accessible modal dialogs for user notifications and confirmations.
+            </p>
+        </div>
+    </div>
+    <div class="component-grid">
+        <a class="component-card" href="feedback">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#f59e0b,#f97316)">🔔</div>
+            <div class="component-card__title">Toast</div>
+            <p class="component-card__text">Stackable notifications — success, info, warning, error — with auto-dismiss.</p>
+        </a>
+        <a class="component-card" href="feedback">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#ef4444,#a855f7)">⬜</div>
+            <div class="component-card__title">Modal</div>
+            <p class="component-card__text">Accessible dialog with customisable header, body, and footer slots.</p>
+        </a>
+    </div>
+</div>
+
+<!-- ══ Layout ══════════════════════════════════════════════════ -->
+<div class="ov-section">
+    <div class="ov-section__header">
+        <span class="ov-section__badge" style="background:linear-gradient(135deg,#10b981,#22d3ee)">◌</span>
+        <div>
+            <h2 class="ov-section__title">Layout &amp; Navigation</h2>
+            <p class="ov-section__desc">
+                Loading indicators, overlays, tab containers, and reusable page layouts.
+            </p>
+        </div>
+    </div>
+    <div class="component-grid">
+        <a class="component-card" href="layout/spinner">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#10b981,#22d3ee)">◌</div>
+            <div class="component-card__title">Spinner</div>
+            <p class="component-card__text">4 animation variants (Ring, Pulse, Wave, Gradient), 6 sizes, custom colours.</p>
+        </a>
+        <a class="component-card" href="layout/spinner">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#22d3ee,#3b82f6)">⬚</div>
+            <div class="component-card__title">LoadingOverlay</div>
+            <p class="component-card__text">Blurred curtain that masks any child content block during async operations.</p>
+        </a>
+        <a class="component-card" href="layout/tabs">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#6366f1,#06b6d4)">⊟</div>
+            <div class="component-card__title">Tabs</div>
+            <p class="component-card__text">Accessible tab container with lazy content rendering and custom headers.</p>
+        </a>
+        <a class="component-card" href="layout/standard">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#a855f7,#6366f1)">▣</div>
+            <div class="component-card__title">Standard Layout</div>
+            <p class="component-card__text">Pre-built header + sidebar + main + footer page scaffold.</p>
+        </a>
+        <a class="component-card" href="layout/custom">
+            <div class="component-card__icon" style="background:linear-gradient(135deg,#f59e0b,#a855f7)">⊞</div>
+            <div class="component-card__title">Custom Layouts</div>
+            <p class="component-card__text">Flexible grid-based layout recipes — sidebar, split, dashboard and more.</p>
+        </a>
+    </div>
+</div>
+
+<style>
+.ov-section {
+    margin-bottom: 2.5rem;
+}
+.ov-section__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.ov-section__badge {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.ov-section__title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 0.2rem;
+    color: var(--app-text);
+}
+.ov-section__desc {
+    font-size: 0.875rem;
+    color: var(--app-text-mute);
+    margin: 0;
+    line-height: 1.5;
+}
+</style>

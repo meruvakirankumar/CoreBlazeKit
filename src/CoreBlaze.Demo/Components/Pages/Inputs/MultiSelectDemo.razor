@@ -1,0 +1,102 @@
+@page "/inputs/multiselect"
+
+<PageTitle>MultiSelectDropdown · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>MultiSelectDropdown&lt;TItem, TValue&gt;</h1>
+    <p class="text-muted">
+        A real dropdown — options live behind a trigger that shows the current
+        selection as removable chips (default) or a comma-separated text summary.
+        Includes optional <em>Select all</em> / <em>Clear</em> toolbar.
+    </p>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="demo-section">
+            <h3>Playground — <code>DisplayMode.Chips</code></h3>
+            <p class="demo-section__hint">Each selection becomes a removable pill.</p>
+            <MultiSelectDropdown TItem="string" TValue="string"
+                                 Items="Repo.Departments"
+                                 ValueSelector="x => x"
+                                 TextSelector="x => x"
+                                 @bind-Value="_selected"
+                                 Label="Departments visited (chips)"
+                                 Placeholder="Select departments…"
+                                 DisplayMode="MultiSelectDisplayMode.Chips" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Playground — <code>DisplayMode.Text</code></h3>
+            <p class="demo-section__hint">
+                Same underlying value — try changing the chips above and watch this
+                text summary stay in sync.
+            </p>
+            <MultiSelectDropdown TItem="string" TValue="string"
+                                 Items="Repo.Departments"
+                                 ValueSelector="x => x"
+                                 TextSelector="x => x"
+                                 @bind-Value="_selected"
+                                 Label="Departments visited (text)"
+                                 Placeholder="Select departments…"
+                                 DisplayMode="MultiSelectDisplayMode.Text" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Variations</h3>
+
+            <MultiSelectDropdown TItem="string" TValue="string"
+                                 Items="Repo.Departments"
+                                 ValueSelector="x => x"
+                                 TextSelector="x => x"
+                                 Value="_disabledValue"
+                                 Label="Disabled example"
+                                 Disabled="true" />
+
+            <MultiSelectDropdown TItem="string" TValue="string"
+                                 Items="Repo.Departments"
+                                 ValueSelector="x => x"
+                                 TextSelector="x => x"
+                                 Label="No Select-all toolbar"
+                                 Placeholder="Pick some…"
+                                 @bind-Value="_selected2"
+                                 ShowSelectAll="false" />
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="demo-section">
+            <h3>Bound values</h3>
+            <div class="kv">
+                <div class="kv__row"><span class="kv__key">Count</span> <code>@(_selected?.Count ?? 0) / @Repo.Departments.Count</code></div>
+                <div class="kv__row"><span class="kv__key">Values</span> <code>@(_selected is null || _selected.Count == 0 ? "-" : string.Join(", ", _selected))</code></div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>Keyboard</h3>
+            <ul class="api-list">
+                <li><kbd>Space</kbd> / <kbd>Enter</kbd> / <kbd>↓</kbd> — open the panel</li>
+                <li><kbd>Esc</kbd> — close the panel</li>
+                <li>Click outside the panel — close it</li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h3>API</h3>
+            <ul class="api-list">
+                <li><code>Value</code> / <code>@@bind-Value</code> — <code>IReadOnlyList&lt;TValue&gt;</code></li>
+                <li><code>Items</code>, <code>ValueSelector</code>, <code>TextSelector</code></li>
+                <li><code>DisplayMode</code> — <code>Chips</code> (default) or <code>Text</code></li>
+                <li><code>ShowSelectAll</code> — toolbar visibility (default <code>true</code>)</li>
+                <li><code>Placeholder</code>, <code>Required</code>, <code>Disabled</code></li>
+                <li><code>OnChange</code>, <code>OnBlur</code>, <code>OnFocus</code></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h3>Usage</h3>
+    <CodeSample Code="@_code" />
+</div>

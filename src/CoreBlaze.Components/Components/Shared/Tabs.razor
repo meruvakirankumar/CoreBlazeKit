@@ -1,0 +1,31 @@
+@namespace CoreBlaze.Components.Shared
+
+<CascadingValue Value="this" IsFixed="true">
+    @* Tab children register themselves on init *@
+    @ChildContent
+</CascadingValue>
+
+<div class="cb-tabs @CssClass">
+    <div class="cb-tabs__header" role="tablist">
+        @foreach (var tab in _tabs)
+        {
+            var isActive = ReferenceEquals(tab, _active);
+            <button type="button"
+                    role="tab"
+                    class="cb-tabs__tab @(isActive ? "cb-tabs__tab--active" : null) @(tab.Disabled ? "cb-tabs__tab--disabled" : null)"
+                    aria-selected="@isActive"
+                    aria-disabled="@tab.Disabled"
+                    disabled="@tab.Disabled"
+                    @onclick="() => ActivateTab(tab)">
+                @if (!string.IsNullOrEmpty(tab.Icon))
+                {
+                    <span class="cb-tabs__icon" aria-hidden="true">@tab.Icon</span>
+                }
+                @tab.Title
+            </button>
+        }
+    </div>
+    <div class="cb-tabs__panel" role="tabpanel">
+        @_active?.ChildContent
+    </div>
+</div>

@@ -1,0 +1,22 @@
+@namespace CoreBlaze.Components.Shared
+
+@if (!_dismissed)
+{
+    <div class="cb-alert cb-alert--@VariantClass @CssClass" role="alert">
+        <span class="cb-alert__icon" aria-hidden="true">@IconChar</span>
+        <div class="cb-alert__body">
+            @if (!string.IsNullOrEmpty(Title))
+            {
+                <div class="cb-alert__title">@Title</div>
+            }
+            @if (ChildContent is not null)
+            {
+                <div class="cb-alert__content">@ChildContent</div>
+            }
+        </div>
+        @if (Dismissible)
+        {
+            <button type="button" class="cb-alert__close" aria-label="Dismiss" @onclick="Dismiss">×</button>
+        }
+    </div>
+}

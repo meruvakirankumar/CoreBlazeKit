@@ -1,0 +1,18 @@
+@namespace CoreBlaze.Components.Shared
+
+<div class="cb-progress cb-progress--@SizeClass @CssClass"
+     role="progressbar"
+     aria-valuenow="@(Indeterminate ? null : (int?)Value)"
+     aria-valuemin="0"
+     aria-valuemax="@Max"
+     aria-label="@(Label ?? "Progress")">
+    <div class="cb-progress__track">
+        <div class="cb-progress__bar cb-progress__bar--@VariantClass @(Indeterminate ? "cb-progress__bar--indeterminate" : null) @(Striped ? "cb-progress__bar--striped" : null)"
+             style="@(Indeterminate ? null : $"width:{Percent:0}%")">
+            @if (ShowLabel && !Indeterminate)
+            {
+                <span class="cb-progress__label">@(LabelText ?? $"{Percent:0}%")</span>
+            }
+        </div>
+    </div>
+</div>

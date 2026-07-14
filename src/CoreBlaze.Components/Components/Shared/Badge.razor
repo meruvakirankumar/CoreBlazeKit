@@ -1,0 +1,17 @@
+@namespace CoreBlaze.Components.Shared
+
+@if (ChildContent is not null)
+{
+    <div class="cb-badge-anchor @AnchorCssClass">
+        @ChildContent
+        <span class="cb-badge cb-badge--@VariantClass cb-badge--anchor @(Dot ? "cb-badge--dot" : null)">
+            @BadgeText
+        </span>
+    </div>
+}
+else
+{
+    <span class="cb-badge cb-badge--@VariantClass @(Dot ? "cb-badge--dot" : null) @CssClass">
+        @BadgeText
+    </span>
+}

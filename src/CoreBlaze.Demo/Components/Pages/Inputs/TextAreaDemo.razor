@@ -1,0 +1,79 @@
+@page "/inputs/textarea"
+
+<PageTitle>TextArea · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>TextArea</h1>
+    <p class="text-muted">
+        Multi-line text input with configurable row count and optional character limit.
+    </p>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="demo-section">
+            <h3>Playground</h3>
+            <p class="demo-section__hint">4 rows, unlimited length.</p>
+            <TextArea @bind-Value="_bio"
+                      Label="Biography"
+                      Placeholder="Tell us about yourself…"
+                      Rows="4" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Variations</h3>
+
+            <TextArea @bind-Value="_notes"
+                      Label="Short notes (max 120 chars)"
+                      Placeholder="Keep it brief"
+                      Rows="2"
+                      MaxLength="120" />
+
+            <TextArea Label="Disabled example"
+                      Value="Existing multi-line content
+that the user cannot edit."
+                      Rows="3"
+                      Disabled="true" />
+
+            <TextArea @bind-Value="_errorText"
+                      Label="Error example"
+                      Placeholder="Type something to clear the error…"
+                      Rows="3"
+                      Required="true"
+                      ErrorMessage="@(string.IsNullOrWhiteSpace(_errorText) ? "Please provide a description." : null)" />
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="demo-section">
+            <h3>Bound values</h3>
+            <div class="kv">
+                <div class="kv__row"><span class="kv__key">Bio length</span> <code>@(_bio?.Length ?? 0) chars</code></div>
+                <div class="kv__row"><span class="kv__key">Notes length</span> <code>@(_notes?.Length ?? 0) / 120</code></div>
+            </div>
+            @if (!string.IsNullOrEmpty(_bio))
+            {
+                <h3>Bio value</h3>
+                <pre class="code-block">@_bio</pre>
+            }
+        </div>
+
+        <div class="demo-section">
+            <h3>API</h3>
+            <ul class="api-list">
+                <li><code>Value</code> / <code>@@bind-Value</code> — bound string?</li>
+                <li><code>Label</code>, <code>Placeholder</code></li>
+                <li><code>Rows</code> — visible line count (default 3)</li>
+                <li><code>MaxLength</code> — optional cap</li>
+                <li><code>Required</code>, <code>Disabled</code></li>
+                <li><code>OnChange</code>, <code>OnBlur</code>, <code>OnFocus</code></li>
+                <li><code>ErrorMessage</code>, <code>CssClass</code></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h3>Usage</h3>
+    <CodeSample Code="@_code" />
+</div>

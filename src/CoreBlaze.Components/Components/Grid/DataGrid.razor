@@ -1,0 +1,341 @@
+@namespace CoreBlaze.Components.Grid
+@typeparam T where T : class
+@using System.Globalization
+@using CoreBlaze.Components.Models
+
+<CascadingValue Value="this" IsFixed="true">
+    @* Consumer's <GridColumn> children run and register into _columns *@
+    @Columns
+</CascadingValue>
+
+@{
+    var visibleCols = VisibleColumns;
+    var extraCols = (SelectionMode != GridSelectionMode.None ? 1 : 0) + (ShowCommandColumn ? 1 : 0);
+    var totalCols = visibleCols.Count + extraCols;
+    var selectedOnPage = _pageData.Count(IsSelected);
+    var hideableColumns = _columns.Where(c => c.Field is not null && c.Hideable).ToList();
+}
+
+<div class="cb-grid @CssClass">
+
+    <!-- Toolbar -->
+    <div class="cb-grid__toolbar">
+        <div class="cb-grid__title-group">
+            @if (!string.IsNullOrEmpty(Title))
+            {
+                <div class="cb-grid__title">@Title</div>
+            }
+            <div class="cb-grid__count">
+                @_filteredCount @(_filteredCount == 1 ? "item" : "items")
+                @if (SelectionMode != GridSelectionMode.None && _selected.Count > 0)
+                {
+                    <span class="cb-grid__count-sep">·</span>
+                    <span class="cb-grid__selected-count">@_selected.Count selected</span>
+                    <button type="button" class="cb-grid__linkbtn" @onclick="ClearSelectionAsync">clear</button>
+                }
+            </div>
+        </div>
+
+        <div class="cb-grid__actions">
+            @if (EnableGlobalSearch)
+            {
+                <div class="cb-grid__search">
+                    <span class="cb-grid__search-icon" aria-hidden="true">🔍</span>
+                    <input type="search"
+                           class="cb-grid__search-input"
+                           placeholder="@SearchPlaceholder"
+                           value="@_search"
+                           @oninput="e => OnSearchChanged(e.Value?.ToString())" />
+                </div>
+            }
+            @if (hideableColumns.Count > 0 && ShowColumnsMenu)
+            {
+                <div class="cb-grid__export">
+                    <button type="button"
+                            class="cb-grid__btn cb-grid__export-btn"
+                            aria-haspopup="menu"
+                            aria-expanded="@_columnsMenuOpen"
+                            @onclick="ToggleColumnsMenu"
+                            @onclick:stopPropagation="true"
+                            title="Show/hide columns">
+                        ⛁ Columns <span class="cb-grid__export-caret" aria-hidden="true">▾</span>
+                    </button>
+                    @if (_columnsMenuOpen)
+                    {
+                        <div class="cb-grid__export-backdrop" @onclick="CloseColumnsMenu"></div>
+                        <div class="cb-grid__export-menu cb-grid__columns-menu" role="menu"
+                             @onclick:stopPropagation="true">
+                            <div class="cb-grid__columns-menu-toolbar">
+                                <span class="cb-grid__columns-menu-title">Columns</span>
+                                <button type="button" class="cb-grid__linkbtn" @onclick="ShowAllColumns">Show all</button>
+                            </div>
+                            @foreach (var col in hideableColumns)
+                            {
+                                var visible = IsColumnVisible(col);
+                                <label class="cb-grid__columns-menu-item">
+                                    <input type="checkbox"
+                                           checked="@visible"
+                                           @onchange="e => ToggleColumn(col, (bool)e.Value!)" />
+                                    <span>@(col.Title ?? col.Field)</span>
+                                </label>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (AnyExportEnabled)
+            {
+                <div class="cb-grid__export">
+                    <button type="button"
+                            class="cb-grid__btn cb-grid__export-btn"
+                            aria-haspopup="menu"
+                            aria-expanded="@_exportMenuOpen"
+                            @onclick="ToggleExportMenu"
+                            @onclick:stopPropagation="true"
+                            title="Export current view">
+                        ⇩ Export <span class="cb-grid__export-caret" aria-hidden="true">▾</span>
+                    </button>
+                    @if (_exportMenuOpen)
+                    {
+                        <div class="cb-grid__export-backdrop" @onclick="CloseExportMenu"></div>
+                        <div class="cb-grid__export-menu" role="menu" @onclick:stopPropagation="true">
+                            @if (CanExportCsv)
+                            {
+                                <button type="button" role="menuitem" class="cb-grid__export-item" @onclick="ExportCsvAsync">
+                                    <span class="cb-grid__export-icon cb-grid__export-icon--csv">CSV</span>
+                                    <span class="cb-grid__export-label">
+                                        <span>Comma-separated</span>
+                                        <span class="cb-grid__export-sub">.csv · plain text</span>
+                                    </span>
+                                </button>
+                            }
+                            @if (CanExportExcel)
+                            {
+                                <button type="button" role="menuitem" class="cb-grid__export-item" @onclick="ExportExcelAsync">
+                                    <span class="cb-grid__export-icon cb-grid__export-icon--xls">XLS</span>
+                                    <span class="cb-grid__export-label">
+                                        <span>Excel workbook</span>
+                                        <span class="cb-grid__export-sub">.xlsx · typed cells, frozen header</span>
+                                    </span>
+                                </button>
+                            }
+                            @if (CanExportPdf)
+                            {
+                                <button type="button" role="menuitem" class="cb-grid__export-item" @onclick="ExportPdfAsync">
+                                    <span class="cb-grid__export-icon cb-grid__export-icon--pdf">PDF</span>
+                                    <span class="cb-grid__export-label">
+                                        <span>PDF document</span>
+                                        <span class="cb-grid__export-sub">.pdf · landscape, striped rows</span>
+                                    </span>
+                                </button>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            @if (AllowAdd && !IsEditing)
+            {
+                <button type="button" class="cb-grid__btn cb-grid__btn--primary" @onclick="BeginAdd">
+                    + Add
+                </button>
+            }
+            @Toolbar
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="cb-grid__scroll">
+        <table class="cb-grid__table">
+            <thead>
+                <tr>
+                    @if (SelectionMode == GridSelectionMode.Multiple)
+                    {
+                        <th class="cb-grid__th cb-grid__th--select">
+                            <input type="checkbox"
+                                   aria-label="Select all on page"
+                                   checked="@IsAllOnPageSelected"
+                                   @onchange="e => ToggleSelectAllOnPageAsync((bool)e.Value!)" />
+                        </th>
+                    }
+                    else if (SelectionMode == GridSelectionMode.Single)
+                    {
+                        <th class="cb-grid__th cb-grid__th--select"></th>
+                    }
+
+                    @foreach (var col in visibleCols)
+                    {
+                        var sd = SortFor(col.Field);
+                        var ord = SortOrdinal(col.Field);
+                        <th style="@(col.Width is null ? null : $"width:{col.Width}")"
+                            class="@(col.Sortable ? "cb-grid__th cb-grid__th--sortable" : "cb-grid__th")"
+                            title="@(col.Sortable ? "Click to sort · Shift+click for multi-sort" : null)"
+                            @onclick="args => OnSortHeaderClicked(col, args)">
+                            @if (col.HeaderTemplate is not null)
+                            {
+                                @col.HeaderTemplate
+                            }
+                            else
+                            {
+                                @(col.Title ?? col.Field)
+                            }
+                            @if (sd is not null)
+                            {
+                                <span class="cb-grid__sort-indicator">
+                                    @(sd.Direction == GridSortDirection.Ascending ? "▲" : "▼")
+                                    @if (_sortChain.Count > 1)
+                                    {
+                                        <span class="cb-grid__sort-ordinal">@ord</span>
+                                    }
+                                </span>
+                            }
+                        </th>
+                    }
+
+                    @if (ShowCommandColumn)
+                    {
+                        <th class="cb-grid__th cb-grid__th--commands">Actions</th>
+                    }
+                </tr>
+
+                @if (ShowFilterRow)
+                {
+                    <tr class="cb-grid__filter-row">
+                        @if (SelectionMode != GridSelectionMode.None)
+                        {
+                            <th></th>
+                        }
+                        @foreach (var col in visibleCols)
+                        {
+                            <th>
+                                @if (col.Field is not null && col.Sortable)
+                                {
+                                    <input type="text"
+                                           class="cb-grid__filter-input"
+                                           placeholder="Filter…"
+                                           value="@GetFilterText(col.Field)"
+                                           @onchange="e => OnFilterChanged(col.Field, e.Value?.ToString())" />
+                                }
+                            </th>
+                        }
+                        @if (ShowCommandColumn)
+                        {
+                            <th></th>
+                        }
+                    </tr>
+                }
+            </thead>
+
+            <tbody>
+                @if (_pageData.Count == 0 && !_isAdding)
+                {
+                    <tr>
+                        <td colspan="@totalCols" class="cb-grid__empty">
+                            <div class="cb-grid__empty-icon" aria-hidden="true">📭</div>
+                            <div class="cb-grid__empty-title">@(EmptyText ?? "No data")</div>
+                            @if (!string.IsNullOrEmpty(_search) || _filters.Count > 0)
+                            {
+                                <div class="cb-grid__empty-hint">Try clearing filters or the search box.</div>
+                            }
+                        </td>
+                    </tr>
+                }
+
+                @if (_isAdding && _editingItem is not null)
+                {
+                    <tr class="cb-grid__row cb-grid__row--adding" @onkeydown="OnEditKeyDown">
+                        @if (SelectionMode != GridSelectionMode.None)
+                        {
+                            <td class="cb-grid__td cb-grid__td--select"></td>
+                        }
+                        @foreach (var col in visibleCols)
+                        {
+                            <td>@RenderEditCell(col, _editingItem)</td>
+                        }
+                        @if (ShowCommandColumn)
+                        {
+                            <td class="cb-grid__td--commands">
+                                <button type="button" class="cb-grid__btn cb-grid__btn--primary" @onclick="CommitAsync">Save</button>
+                                <button type="button" class="cb-grid__btn" @onclick="CancelAsync">Cancel</button>
+                            </td>
+                        }
+                    </tr>
+                }
+
+                @foreach (var item in _pageData)
+                {
+                    var isEditing = ReferenceEquals(item, _editingItem) && !_isAdding;
+                    var isRowSelected = IsSelected(item);
+                    var rowClass = "cb-grid__row"
+                        + (isEditing ? " cb-grid__row--editing" : "")
+                        + (isRowSelected ? " cb-grid__row--selected" : "");
+                    if (_rowStates.TryGetValue(item, out var st))
+                        rowClass += " cb-grid__row--" + st.ToString().ToLowerInvariant();
+
+                    <tr class="@rowClass" @onkeydown="OnEditKeyDown">
+                        @if (SelectionMode != GridSelectionMode.None)
+                        {
+                            <td class="cb-grid__td cb-grid__td--select">
+                                <input type="@(SelectionMode == GridSelectionMode.Multiple ? "checkbox" : "radio")"
+                                       name="cb-grid-selection"
+                                       aria-label="Select row"
+                                       checked="@isRowSelected"
+                                       @onchange="e => ToggleSelectAsync(item, (bool)e.Value!)" />
+                            </td>
+                        }
+
+                        @foreach (var col in visibleCols)
+                        {
+                            var isCellEditing =
+                                (EditMode == GridEditMode.Row && isEditing) ||
+                                (EditMode == GridEditMode.Cell && ReferenceEquals(item, _editingItem) && col == _editingColumn);
+
+                            <td class="cb-grid__td"
+                                @ondblclick="() => OnCellDoubleClicked(item, col)">
+                                @if (isCellEditing)
+                                {
+                                    @RenderEditCell(col, item)
+                                }
+                                else
+                                {
+                                    @RenderDisplayCell(col, item)
+                                }
+                            </td>
+                        }
+
+                        @if (ShowCommandColumn)
+                        {
+                            <td class="cb-grid__td--commands">
+                                @if (isEditing)
+                                {
+                                    <button type="button" class="cb-grid__btn cb-grid__btn--primary" @onclick="CommitAsync" title="Save (Enter)">Save</button>
+                                    <button type="button" class="cb-grid__btn" @onclick="CancelAsync" title="Cancel (Esc)">Cancel</button>
+                                }
+                                else
+                                {
+                                    @if (AllowEdit)
+                                    {
+                                        <button type="button" class="cb-grid__btn" @onclick="() => BeginEdit(item)">Edit</button>
+                                    }
+                                    @if (AllowDelete)
+                                    {
+                                        <button type="button" class="cb-grid__btn cb-grid__btn--danger" @onclick="() => DeleteAsync(item)">Delete</button>
+                                    }
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Pageable)
+    {
+        <GridPager Page="_page"
+                   PageSize="_pageSize"
+                   TotalItems="_filteredCount"
+                   PageChanged="OnPageChanged"
+                   PageSizeChanged="OnPageSizeChanged" />
+    }
+</div>

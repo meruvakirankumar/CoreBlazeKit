@@ -1,0 +1,111 @@
+@namespace CoreBlaze.Components.Inputs
+@typeparam TItem
+@typeparam TValue
+@inherits BaseInputComponent<IReadOnlyList<TValue>>
+@using CoreBlaze.Components.Base
+@using CoreBlaze.Components.Shared
+
+<div class="@RootCssClass">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="cb-input__label" for="@InputId">
+            @Label@(Required ? "*" : null)
+        </label>
+    }
+
+    <div class="cb-multiselect__wrap">
+        <div id="@InputId"
+             class="cb-multiselect__trigger @(_isOpen ? "cb-multiselect__trigger--open" : null)"
+             role="combobox"
+             tabindex="0"
+             aria-haspopup="listbox"
+             aria-expanded="@_isOpen"
+             aria-required="@Required"
+             aria-invalid="@HasValidationErrors"
+             @onclick="ToggleOpen"
+             @onkeydown="OnTriggerKeyDown">
+
+            <div class="cb-multiselect__values">
+                @if (Value is null || Value.Count == 0)
+                {
+                    <span class="cb-multiselect__placeholder">@(Placeholder ?? "Select…")</span>
+                }
+                else if (DisplayMode == MultiSelectDisplayMode.Chips)
+                {
+                    @foreach (var v in Value)
+                    {
+                        var text = LookupText(v);
+                        <span class="cb-multiselect__chip">
+                            <span class="cb-multiselect__chip-text">@text</span>
+                            @if (!Disabled)
+                            {
+                                <button type="button"
+                                        class="cb-multiselect__chip-close"
+                                        aria-label="Remove @text"
+                                        @onclick:stopPropagation="true"
+                                        @onclick="() => OnToggleAsync(v, false)">×</button>
+                            }
+                        </span>
+                    }
+                }
+                else
+                {
+                    <span class="cb-multiselect__summary">
+                        @string.Join(", ", Value.Select(LookupText))
+                    </span>
+                }
+            </div>
+
+            <span class="cb-multiselect__caret" aria-hidden="true">
+                @(_isOpen ? "▴" : "▾")
+            </span>
+        </div>
+
+        @if (_isOpen)
+        {
+            <div class="cb-multiselect__backdrop" @onclick="Close"></div>
+            <div class="cb-multiselect__panel" role="listbox" aria-multiselectable="true"
+                 @onclick:stopPropagation="true">
+                @if (Items is null || !Items.Any())
+                {
+                    <div class="cb-multiselect__empty">No options</div>
+                }
+                else
+                {
+                    @if (ShowSelectAll)
+                    {
+                        <div class="cb-multiselect__toolbar">
+                            <button type="button" class="cb-multiselect__linkbtn" @onclick="SelectAllAsync">
+                                Select all
+                            </button>
+                            <button type="button" class="cb-multiselect__linkbtn" @onclick="ClearAsync"
+                                    disabled="@(Value is null || Value.Count == 0)">
+                                Clear
+                            </button>
+                        </div>
+                    }
+                    <div class="cb-multiselect__options">
+                        @foreach (var item in Items)
+                        {
+                            var val = ValueSelector(item);
+                            var text = TextSelector(item);
+                            var isChecked = IsSelected(val);
+                            var optionId = $"{InputId}-{Guid.NewGuid():N}";
+                            <label class="cb-multiselect__option @(isChecked ? "cb-multiselect__option--selected" : null)"
+                                   for="@optionId">
+                                <input type="checkbox"
+                                       id="@optionId"
+                                       disabled="@Disabled"
+                                       checked="@isChecked"
+                                       @onchange="e => OnToggleAsync(val, (bool)e.Value!)" />
+                                <span class="cb-multiselect__option-text">@text</span>
+                            </label>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <ValidationMessageDisplay Messages="ValidationMessages" />
+</div>

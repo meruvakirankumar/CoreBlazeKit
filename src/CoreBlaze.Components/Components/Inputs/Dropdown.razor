@@ -1,0 +1,42 @@
+@namespace CoreBlaze.Components.Inputs
+@typeparam TItem
+@typeparam TValue
+@inherits BaseInputComponent<TValue>
+@using CoreBlaze.Components.Base
+@using CoreBlaze.Components.Shared
+
+<div class="@RootCssClass">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="cb-input__label" for="@InputId">
+            @Label@(Required ? "*" : null)
+        </label>
+    }
+
+    <select @attributes="AdditionalAttributes"
+            id="@InputId"
+            class="cb-input__control cb-input__control--select"
+            disabled="@Disabled"
+            aria-required="@Required"
+            aria-invalid="@HasValidationErrors"
+            @onchange="OnSelectChangedAsync"
+            @onblur="HandleBlurAsync"
+            @onfocus="HandleFocusAsync">
+        @if (!string.IsNullOrEmpty(Placeholder))
+        {
+            <option value="" selected="@(Value is null)">@Placeholder</option>
+        }
+        @if (Items is not null)
+        {
+            foreach (var item in Items)
+            {
+                var val = ValueSelector(item);
+                var text = TextSelector(item);
+                var strVal = val?.ToString() ?? string.Empty;
+                <option value="@strVal" selected="@(Equals(val, Value))">@text</option>
+            }
+        }
+    </select>
+
+    <ValidationMessageDisplay Messages="ValidationMessages" />
+</div>

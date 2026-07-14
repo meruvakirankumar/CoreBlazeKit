@@ -1,0 +1,8 @@
+@namespace CoreBlaze.Components.Shared
+
+<div class="cb-divider @(Vertical ? "cb-divider--vertical" : null) @CssClass" role="separator">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <span class="cb-divider__label">@Label</span>
+    }
+</div>

@@ -1,0 +1,243 @@
+/* Shared styles for per-component demo pages */
+
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+    margin-bottom: 0.35rem;
+}
+
+.page-header p {
+    max-width: 46rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Key/value list used by demo pages */
+.kv {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+}
+
+.kv__row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.4rem;
+    background-color: var(--app-code-bg);
+}
+
+.kv__key {
+    min-width: 6.5rem;
+    color: var(--app-text-mute);
+    font-weight: 500;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Compact API-reference list */
+.api-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+}
+.api-list li {
+    padding: 0.35rem 0.6rem;
+    background-color: var(--app-code-bg);
+    border-radius: 0.4rem;
+    line-height: 1.4;
+}
+.api-list code { background: none; padding: 0; font-size: 0.88em; }
+
+/* Overview grid of component cards on /inputs */
+.component-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+}
+
+.component-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    padding: 1.25rem;
+    background-color: var(--app-bg-elev);
+    border: 1px solid var(--app-border);
+    border-radius: 0.75rem;
+    color: var(--app-text);
+    box-shadow: var(--app-shadow-sm);
+    transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+.component-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--app-shadow-md);
+    border-color: rgba(99, 102, 241, 0.4);
+    color: var(--app-text);
+}
+
+.component-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.6rem;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.75rem;
+    box-shadow: var(--app-shadow-sm);
+}
+
+.component-card__title { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.35rem; }
+.component-card__text  { font-size: 0.88rem; color: var(--app-text-mute); line-height: 1.45; margin: 0; }
+.component-card code   { font-size: 0.8em; }
+
+/* File list used by the FileUpload demo */
+.file-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.file-list__item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--app-code-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+}
+.file-list__thumb {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #6366f1, #22d3ee);
+    color: #fff;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.file-list__meta { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+.file-list__name { font-weight: 500; color: var(--app-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-list__sub  { font-size: 0.8rem; color: var(--app-text-mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Code block used by TextArea / Form demos */
+.code-block {
+    margin: 0;
+    padding: 1rem;
+    background-color: var(--app-code-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    color: var(--app-text);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Reusable code sample block */
+.code-sample {
+    border: 1px solid var(--app-border);
+    border-radius: 0.6rem;
+    background-color: #0f172a;
+    color: #e2e8f0;
+    overflow: hidden;
+    box-shadow: var(--app-shadow-sm);
+    margin: 0;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, 'Courier New', monospace;
+}
+
+.code-sample__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0.75rem;
+    background-color: #111827;
+    border-bottom: 1px solid #1f2937;
+    font-family: var(--app-brand, system-ui, sans-serif);
+}
+
+.code-sample__lang {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.code-sample__actions { display: flex; gap: 0.35rem; }
+
+.code-sample__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    background: transparent;
+    border: 1px solid #334155;
+    border-radius: 0.35rem;
+    color: #cbd5e1;
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background-color 100ms ease, border-color 100ms ease, color 100ms ease;
+}
+.code-sample__btn:hover { background-color: #1f2937; border-color: #475569; color: #fff; }
+.code-sample__copy { min-width: 5rem; justify-content: center; }
+
+.code-sample__body {
+    margin: 0;
+    padding: 0.9rem 1rem;
+    background-color: transparent;
+    color: inherit;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    overflow-x: auto;
+    white-space: pre;
+    max-height: 22rem;
+}
+
+.code-sample:not(.code-sample--expanded) .code-sample__body {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+.code-sample__body code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    border-radius: 0;
+}
+
+/* <kbd> pills */
+kbd {
+    display: inline-block;
+    padding: 0 0.35rem;
+    font-family: inherit;
+    font-size: 0.8em;
+    color: var(--app-text);
+    background-color: var(--app-bg-elev);
+    border: 1px solid var(--app-border);
+    border-bottom-width: 2px;
+    border-radius: 0.3rem;
+    line-height: 1.5;
+}

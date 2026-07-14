@@ -1,0 +1,87 @@
+@page "/inputs/dropdown"
+
+<PageTitle>Dropdown · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>Dropdown&lt;TItem, TValue&gt;</h1>
+    <p class="text-muted">
+        Single-select dropdown generic over the option's item type and the bound value type.
+        You supply <code>ValueSelector</code> (how to get the value) and <code>TextSelector</code>
+        (how to display it).
+    </p>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="demo-section">
+            <h3>Playground — string list</h3>
+            <p class="demo-section__hint">Item and value are the same type.</p>
+            <Dropdown TItem="string" TValue="string"
+                      Items="Repo.Departments"
+                      ValueSelector="x => x"
+                      TextSelector="x => x"
+                      @bind-Value="_department"
+                      Label="Department"
+                      Placeholder="Pick one…" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Playground — object list with mapped value</h3>
+            <p class="demo-section__hint">Bind to a distinct value type (here: the priority level int).</p>
+            <Dropdown TItem="Priority" TValue="int"
+                      Items="_priorities"
+                      ValueSelector="p => p.Level"
+                      TextSelector="PriorityText"
+                      @bind-Value="_priorityLevel"
+                      Label="Priority"
+                      Placeholder="Select priority…" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Variations</h3>
+            <Dropdown TItem="string" TValue="string"
+                      Items="Repo.Departments"
+                      ValueSelector="x => x"
+                      TextSelector="x => x"
+                      Value="@("Engineering")"
+                      Label="Disabled example"
+                      Disabled="true" />
+
+            <Dropdown TItem="string" TValue="string"
+                      Items="Repo.Departments"
+                      ValueSelector="x => x"
+                      TextSelector="x => x"
+                      @bind-Value="_errorDept"
+                      Label="Error example"
+                      Placeholder="Choose to clear the error…"
+                      ErrorMessage="@(string.IsNullOrEmpty(_errorDept) ? "Please pick a department." : null)" />
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="demo-section">
+            <h3>Bound values</h3>
+            <div class="kv">
+                <div class="kv__row"><span class="kv__key">Department</span> <code>@(_department ?? "-")</code></div>
+                <div class="kv__row"><span class="kv__key">Priority</span> <code>@_priorityLevel</code></div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>API</h3>
+            <ul class="api-list">
+                <li><code>TItem</code>, <code>TValue</code> — generic parameters</li>
+                <li><code>Items</code> — <code>IEnumerable&lt;TItem&gt;</code></li>
+                <li><code>ValueSelector</code> — <code>Func&lt;TItem, TValue?&gt;</code></li>
+                <li><code>TextSelector</code> — <code>Func&lt;TItem, string&gt;</code></li>
+                <li><code>Value</code> / <code>@@bind-Value</code>, <code>Placeholder</code></li>
+                <li><code>Required</code>, <code>Disabled</code>, <code>ErrorMessage</code></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h3>Usage</h3>
+    <CodeSample Code="@_code" />
+</div>

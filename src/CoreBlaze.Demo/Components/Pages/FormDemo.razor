@@ -1,0 +1,66 @@
+@page "/form"
+
+<PageTitle>Form validation · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>Form validation</h1>
+    <p class="text-muted">
+        An <code>EditForm</code> using DataAnnotations. Every CoreBlaze input picks up the
+        cascading <code>EditContext</code> and renders inline validation.
+    </p>
+</div>
+
+<div class="demo-section">
+    <EditForm Model="_person" OnValidSubmit="OnValidSubmit" class="row g-3">
+        <DataAnnotationsValidator />
+
+        <div class="col-md-6">
+            <TextInput @bind-Value="_person.Name" Label="Name" Placeholder="Full name" Required="true" />
+        </div>
+
+        <div class="col-md-6">
+            <NumberInput TNumber="int" @bind-Value="_person.Age" Label="Age" Min="0" Max="130" />
+        </div>
+
+        <div class="col-md-6">
+            <Dropdown TItem="string" TValue="string"
+                      Items="Repo.Departments"
+                      ValueSelector="x => x"
+                      TextSelector="x => x"
+                      @bind-Value="_person.Department"
+                      Label="Department"
+                      Placeholder="Pick one…"
+                      Required="true" />
+        </div>
+
+        <div class="col-md-6">
+            <DatePicker @bind-Value="_person.HireDate" Label="Hire date" />
+        </div>
+
+        <div class="col-12">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="active" @bind="_person.IsActive" />
+                <label class="form-check-label" for="active">Currently active</label>
+            </div>
+        </div>
+
+        <div class="col-12 form-actions">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="Reset">Reset</button>
+        </div>
+    </EditForm>
+</div>
+
+@if (_submitted)
+{
+    <div class="demo-section">
+        <h3>Submitted</h3>
+        <p class="demo-section__hint">This is what the form validated and produced.</p>
+        <pre class="code-block">@System.Text.Json.JsonSerializer.Serialize(_person, new System.Text.Json.JsonSerializerOptions { WriteIndented = true })</pre>
+    </div>
+}
+
+<div class="demo-section">
+    <h3>Usage</h3>
+    <CodeSample Code="@_code" />
+</div>

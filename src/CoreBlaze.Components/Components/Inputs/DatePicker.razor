@@ -1,0 +1,30 @@
+@namespace CoreBlaze.Components.Inputs
+@inherits BaseInputComponent<DateTime?>
+@using CoreBlaze.Components.Base
+@using CoreBlaze.Components.Shared
+
+<div class="@RootCssClass">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="cb-input__label" for="@InputId">
+            @Label@(Required ? "*" : null)
+        </label>
+    }
+
+    <input @attributes="AdditionalAttributes"
+           id="@InputId"
+           type="date"
+           class="cb-input__control"
+           value="@FormattedValue"
+           placeholder="@Placeholder"
+           disabled="@Disabled"
+           min="@MinDate?.ToString("yyyy-MM-dd")"
+           max="@MaxDate?.ToString("yyyy-MM-dd")"
+           aria-required="@Required"
+           aria-invalid="@HasValidationErrors"
+           @onchange="OnDateChangedAsync"
+           @onblur="HandleBlurAsync"
+           @onfocus="HandleFocusAsync" />
+
+    <ValidationMessageDisplay Messages="ValidationMessages" />
+</div>

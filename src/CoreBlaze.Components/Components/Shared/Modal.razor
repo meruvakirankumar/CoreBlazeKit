@@ -1,0 +1,38 @@
+@namespace CoreBlaze.Components.Shared
+
+@if (IsOpen)
+{
+    <div class="cb-modal" role="dialog" aria-modal="true" aria-labelledby="@_titleId">
+        <div class="cb-modal__backdrop"
+             @onclick="OnBackdropClickAsync"></div>
+        <div class="cb-modal__dialog cb-modal__dialog--@Size.ToString().ToLowerInvariant()"
+             @onclick:stopPropagation="true">
+            @if (!string.IsNullOrEmpty(Title) || ShowCloseButton)
+            {
+                <header class="cb-modal__header">
+                    @if (!string.IsNullOrEmpty(Title))
+                    {
+                        <h3 class="cb-modal__title" id="@_titleId">@Title</h3>
+                    }
+                    else
+                    {
+                        <span></span>
+                    }
+                    @if (ShowCloseButton)
+                    {
+                        <button type="button" class="cb-modal__close"
+                                aria-label="Close"
+                                @onclick="CloseAsync">×</button>
+                    }
+                </header>
+            }
+            <div class="cb-modal__body">
+                @ChildContent
+            </div>
+            @if (Footer is not null)
+            {
+                <footer class="cb-modal__footer">@Footer</footer>
+            }
+        </div>
+    </div>
+}

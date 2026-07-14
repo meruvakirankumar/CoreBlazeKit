@@ -1,0 +1,90 @@
+@page "/"
+
+<PageTitle>CoreBlaze</PageTitle>
+
+<section class="hero">
+    <div class="hero__badge">Blazor · .NET 8+</div>
+    <h1 class="hero__title">
+        A lightweight, extensible <span class="hero__title-accent">Blazor</span> component library.
+    </h1>
+    <p class="hero__lead">
+        Clean APIs, DataAnnotations validation out of the box, and a powerful
+        <code>DataGrid&lt;T&gt;</code> with inline / in-cell editing —
+        packaged as a NuGet-ready Razor Class Library.
+    </p>
+    <div class="hero__actions">
+        <a class="btn btn-primary" href="inputs">Explore components →</a>
+        <a class="btn btn-outline-secondary" href="grid">See the DataGrid</a>
+    </div>
+</section>
+
+<section class="features">
+    <a class="feature" href="inputs">
+        <div class="feature__icon" style="background: linear-gradient(135deg, #6366f1, #a855f7);">Aa</div>
+        <div class="feature__title">Inputs</div>
+        <div class="feature__text">
+            TextInput, TextArea, NumberInput, DatePicker, Dropdown, MultiSelect &amp; drag-and-drop FileUpload —
+            all built on the same <code>BaseInputComponent&lt;T&gt;</code>.
+        </div>
+    </a>
+
+    <a class="feature" href="grid">
+        <div class="feature__icon" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">▤</div>
+        <div class="feature__title">DataGrid&lt;T&gt;</div>
+        <div class="feature__text">
+            Sortable headers, per-column filter row, paging, row / cell editing,
+            column templates and tracked <code>RowState</code> for Add / Edit / Delete.
+        </div>
+    </a>
+
+    <a class="feature" href="inputs/fileupload">
+        <div class="feature__icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">☁</div>
+        <div class="feature__title">File upload</div>
+        <div class="feature__text">
+            Drag-and-drop or click to browse. Two-way binds to
+            <code>IReadOnlyList&lt;IBrowserFile&gt;</code>.
+        </div>
+    </a>
+
+    <a class="feature" href="form">
+        <div class="feature__icon" style="background: linear-gradient(135deg, #10b981, #22d3ee);">✓</div>
+        <div class="feature__title">Form validation</div>
+        <div class="feature__text">
+            Every input picks up the cascading <code>EditContext</code> so
+            <code>DataAnnotations</code> just work.
+        </div>
+    </a>
+</section>
+
+<section class="highlights">
+    <h2>Everything you need</h2>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="highlight">
+                <div class="highlight__title">Clean APIs</div>
+                <div class="highlight__text">
+                    Familiar Blazor patterns — <code>@@bind-Value</code>,
+                    <code>EventCallback</code>s and cascading <code>EditContext</code>.
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="highlight">
+                <div class="highlight__title">Themeable</div>
+                <div class="highlight__text">
+                    CSS variables everywhere. Add <code>class="cb-theme-dark"</code>
+                    to any ancestor for dark mode — try the toggle above.
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="highlight">
+                <div class="highlight__title">Tested</div>
+                <div class="highlight__text">
+                    xUnit + bUnit suite covering utilities, services,
+                    <code>TextInput</code> and <code>DataGrid</code>.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

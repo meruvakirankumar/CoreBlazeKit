@@ -1,0 +1,44 @@
+@namespace CoreBlaze.Components.Inputs
+@typeparam TNumber
+@inherits BaseInputComponent<TNumber>
+@using CoreBlaze.Components.Base
+@using CoreBlaze.Components.Shared
+
+<div class="@RootCssClass">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="cb-input__label" for="@InputId">
+            @Label@(Required ? "*" : null)
+        </label>
+    }
+
+    <div class="cb-input__group @(HasAdornments ? "cb-input__group--adorned" : null)">
+        @if (!string.IsNullOrEmpty(Prefix))
+        {
+            <span class="cb-input__adornment cb-input__adornment--prefix" aria-hidden="true">@Prefix</span>
+        }
+
+        <input @attributes="AdditionalAttributes"
+               id="@InputId"
+               type="number"
+               class="cb-input__control"
+               value="@CurrentValueAsString"
+               placeholder="@Placeholder"
+               disabled="@Disabled"
+               step="@Step"
+               min="@Min"
+               max="@Max"
+               aria-required="@Required"
+               aria-invalid="@HasValidationErrors"
+               @onchange="e => CurrentValueAsString = e.Value?.ToString()"
+               @onblur="HandleBlurAsync"
+               @onfocus="HandleFocusAsync" />
+
+        @if (!string.IsNullOrEmpty(Suffix))
+        {
+            <span class="cb-input__adornment cb-input__adornment--suffix" aria-hidden="true">@Suffix</span>
+        }
+    </div>
+
+    <ValidationMessageDisplay Messages="ValidationMessages" />
+</div>

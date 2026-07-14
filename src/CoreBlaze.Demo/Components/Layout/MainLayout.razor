@@ -1,0 +1,65 @@
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject ThemeService Theme
+
+<div class="page @(_isDark ? "cb-theme-dark" : null)">
+    <aside class="sidebar">
+        <div class="sidebar__brand">
+            <div class="sidebar__brand-mark">CB</div>
+            <div class="sidebar__brand-text">
+                <div class="sidebar__brand-title">CoreBlaze</div>
+                <div class="sidebar__brand-sub">Component library</div>
+            </div>
+        </div>
+        <NavMenu />
+    </aside>
+
+    <main>
+        <header class="topbar">
+            <div class="topbar__breadcrumb">
+                <span class="topbar__eyebrow">Demo</span>
+                <span class="topbar__title">CoreBlaze.Components</span>
+            </div>
+            <div class="topbar__actions">
+                <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="ToggleTheme" title="Toggle theme">
+                    @(_isDark ? "☀ Light" : "🌙 Dark")
+                </button>
+                <a class="btn btn-sm btn-outline-secondary" href="https://learn.microsoft.com/aspnet/core/" target="_blank" rel="noopener">
+                    Docs ↗
+                </a>
+            </div>
+        </header>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+<Toaster Position="ToastPosition.TopRight" />
+
+@code {
+    bool _isDark;
+
+    protected override void OnInitialized()
+    {
+        _isDark = Theme.CurrentTheme == "dark";
+        Theme.ThemeChanged += OnThemeChanged;
+    }
+
+    void ToggleTheme() => Theme.SetTheme(_isDark ? "light" : "dark");
+
+    void OnThemeChanged(string theme)
+    {
+        _isDark = theme == "dark";
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose() => Theme.ThemeChanged -= OnThemeChanged;
+}

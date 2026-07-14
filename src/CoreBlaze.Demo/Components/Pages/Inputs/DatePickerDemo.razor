@@ -1,0 +1,75 @@
+@page "/inputs/date"
+
+<PageTitle>DatePicker · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>DatePicker</h1>
+    <p class="text-muted">
+        Native HTML5 date picker bound to <code>DateTime?</code>, with optional
+        <code>MinDate</code> / <code>MaxDate</code> bounds.
+    </p>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="demo-section">
+            <h3>Playground</h3>
+            <p class="demo-section__hint">Unbounded — pick any date.</p>
+            <DatePicker @bind-Value="_hireDate" Label="Hire date" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Bounded range</h3>
+            <p class="demo-section__hint">Must fall between today and one year out.</p>
+            <DatePicker @bind-Value="_upcoming"
+                        Label="Upcoming event"
+                        MinDate="DateTime.Today"
+                        MaxDate="DateTime.Today.AddYears(1)" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Variations</h3>
+
+            <DatePicker Label="Disabled example"
+                        Value="new DateTime(2024, 1, 1)"
+                        Disabled="true" />
+
+            <DatePicker @bind-Value="_errorDate"
+                        Label="Error example"
+                        ErrorMessage="@(_errorDate is null ? "Date is invalid." : null)" />
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="demo-section">
+            <h3>Bound values</h3>
+            <div class="kv">
+                <div class="kv__row"><span class="kv__key">Hire</span> <code>@(_hireDate?.ToString("yyyy-MM-dd") ?? "-")</code></div>
+                <div class="kv__row"><span class="kv__key">Upcoming</span> <code>@(_upcoming?.ToString("yyyy-MM-dd") ?? "-")</code></div>
+                @if (_upcoming is not null)
+                {
+                    <div class="kv__row">
+                        <span class="kv__key">Days out</span>
+                        <code>@((_upcoming.Value.Date - DateTime.Today).Days)</code>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>API</h3>
+            <ul class="api-list">
+                <li><code>Value</code> / <code>@@bind-Value</code> — <code>DateTime?</code></li>
+                <li><code>Label</code></li>
+                <li><code>MinDate</code>, <code>MaxDate</code></li>
+                <li><code>Required</code>, <code>Disabled</code></li>
+                <li><code>OnChange</code>, <code>OnBlur</code>, <code>OnFocus</code></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h3>Usage</h3>
+    <CodeSample Code="@_code" />
+</div>

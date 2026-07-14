@@ -1,0 +1,66 @@
+@page "/layout/standard"
+
+<PageTitle>Standard Layout · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>Standard layout</h1>
+    <p class="text-muted">
+        The classic sidebar + topbar + scrollable content shell — the layout this demo uses
+        itself. Built with <code>Stack</code>, CSS variables, and a sticky sidebar.
+    </p>
+</div>
+
+<div class="demo-section">
+    <h3>Preview</h3>
+    <p class="demo-section__hint">A live miniature replica of the shell.</p>
+
+    <div class="layout-preview layout-preview--standard">
+        <aside class="lp-sidebar">
+            <div class="lp-brand">App</div>
+            <nav class="lp-nav">
+                <div class="lp-nav__item lp-nav__item--active">Dashboard</div>
+                <div class="lp-nav__item">Users</div>
+                <div class="lp-nav__item">Reports</div>
+                <div class="lp-nav__item lp-nav__item--disabled">Settings</div>
+            </nav>
+        </aside>
+        <div class="lp-main">
+            <header class="lp-topbar">
+                <span>Dashboard</span>
+                <span class="lp-topbar__actions">
+                    <span class="lp-pill">🌙</span>
+                    <span class="lp-pill">👤</span>
+                </span>
+            </header>
+            <div class="lp-content">
+                <div class="lp-card lp-card--wide">Page title</div>
+                <div class="lp-row">
+                    <div class="lp-card">Card A</div>
+                    <div class="lp-card">Card B</div>
+                    <div class="lp-card">Card C</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h3>Structure</h3>
+    <p class="demo-section__hint">The Blazor layout file that produces this shell.</p>
+    <CodeSample Language="razor" Code="@_structureCode" />
+</div>
+
+<div class="demo-section">
+    <h3>CSS foundation</h3>
+    <CodeSample Language="css" Code="@_cssCode" />
+</div>
+
+<div class="demo-section">
+    <h3>Key decisions</h3>
+    <ul class="api-list">
+        <li><strong>Sidebar</strong> — <code>position: sticky; top: 0; height: 100vh</code> so it never scrolls away.</li>
+        <li><strong>Content</strong> — <code>overflow-y: auto</code> keeps scrolling within the content column, not the whole page.</li>
+        <li><strong>Theme token</strong> — sidebar background uses CSS variables so dark mode is one class toggle.</li>
+        <li><strong>Responsive</strong> — below 641 px the sidebar collapses to a hamburger; a <code>checkbox:checked</code> hack avoids JS.</li>
+    </ul>
+</div>

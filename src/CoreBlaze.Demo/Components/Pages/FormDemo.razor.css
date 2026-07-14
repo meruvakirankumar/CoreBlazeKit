@@ -1,0 +1,18 @@
+.form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.code-block {
+    margin: 0;
+    padding: 1rem;
+    background-color: var(--app-code-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    color: var(--app-text);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    overflow-x: auto;
+    white-space: pre;
+}

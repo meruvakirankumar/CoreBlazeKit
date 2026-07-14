@@ -1,0 +1,11 @@
+@namespace CoreBlaze.Components.Shared
+
+<div class="cb-overlay @(IsLoading ? "cb-overlay--loading" : null)">
+    @ChildContent
+    @if (IsLoading)
+    {
+        <div class="cb-overlay__curtain" aria-hidden="true">
+            <Spinner Size="SpinnerSize" Label="@LoadingText" />
+        </div>
+    }
+</div>

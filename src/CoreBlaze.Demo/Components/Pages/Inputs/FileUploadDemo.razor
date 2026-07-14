@@ -1,0 +1,108 @@
+@page "/inputs/fileupload"
+@page "/upload"
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>FileUpload · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>FileUpload</h1>
+    <p class="text-muted">
+        Drag-and-drop or click to browse. Bound value is an
+        <code>IReadOnlyList&lt;IBrowserFile&gt;</code> — your handler decides
+        whether to stream, save, or process the files.
+    </p>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="demo-section">
+            <h3>Playground — multiple</h3>
+            <p class="demo-section__hint">Any number of images, PDFs, or text files.</p>
+            <FileUpload @bind-Value="_files"
+                        Label="Attachments"
+                        Placeholder="Drop images or documents here"
+                        Accept=".pdf,.png,.jpg,.jpeg,.txt"
+                        Multiple="true"
+                        OnFilesSelected="OnFilesSelected" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Single-file variant</h3>
+            <p class="demo-section__hint"><code>Multiple="false"</code> — only accept one file at a time.</p>
+            <FileUpload @bind-Value="_avatar"
+                        Label="Avatar"
+                        Placeholder="Drop an image"
+                        Accept="image/*"
+                        Multiple="false" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Variations</h3>
+
+            <FileUpload Label="Disabled example"
+                        Placeholder="Uploads are disabled"
+                        Disabled="true" />
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="demo-section">
+            <h3>Selected files</h3>
+            @if (_files is null || _files.Count == 0)
+            {
+                <p class="text-muted mb-0">No files selected yet.</p>
+            }
+            else
+            {
+                <ul class="file-list">
+                    @foreach (var f in _files)
+                    {
+                        <li class="file-list__item">
+                            <div class="file-list__thumb" aria-hidden="true">@f.Name.Substring(0, 1).ToUpperInvariant()</div>
+                            <div class="file-list__meta">
+                                <div class="file-list__name" title="@f.Name">@f.Name</div>
+                                <div class="file-list__sub">
+                                    @FormatSize(f.Size)
+                                    @if (!string.IsNullOrEmpty(f.ContentType))
+                                    {
+                                        <span> · @f.ContentType</span>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+
+        @if (_avatar is not null && _avatar.Count > 0)
+        {
+            <div class="demo-section">
+                <h3>Avatar</h3>
+                <div class="file-list__item">
+                    <div class="file-list__thumb">@_avatar[0].Name.Substring(0, 1).ToUpperInvariant()</div>
+                    <div class="file-list__meta">
+                        <div class="file-list__name">@_avatar[0].Name</div>
+                        <div class="file-list__sub">@FormatSize(_avatar[0].Size)</div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="demo-section">
+            <h3>API</h3>
+            <ul class="api-list">
+                <li><code>Value</code> / <code>@@bind-Value</code> — <code>IReadOnlyList&lt;IBrowserFile&gt;</code></li>
+                <li><code>Multiple</code> — allow multiple files (default <code>true</code>)</li>
+                <li><code>Accept</code> — HTML <code>accept</code> filter</li>
+                <li><code>OnFilesSelected</code> — event with the picked files</li>
+                <li><code>Placeholder</code>, <code>Required</code>, <code>Disabled</code></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h3>Usage</h3>
+    <CodeSample Code="@_code" />
+</div>

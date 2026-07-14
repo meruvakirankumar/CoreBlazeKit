@@ -1,0 +1,21 @@
+@namespace CoreBlaze.Components.Shared
+
+<label class="cb-toggle cb-toggle--@SizeClass @(Disabled ? "cb-toggle--disabled" : null) @CssClass">
+    <input type="checkbox"
+           class="cb-toggle__input"
+           checked="@Value"
+           disabled="@Disabled"
+           aria-label="@(string.IsNullOrEmpty(Label) ? "Toggle" : Label)"
+           @onchange="OnChangedAsync" />
+    <span class="cb-toggle__track">
+        <span class="cb-toggle__thumb"></span>
+        @if (!string.IsNullOrEmpty(OnText) || !string.IsNullOrEmpty(OffText))
+        {
+            <span class="cb-toggle__text">@(Value ? OnText : OffText)</span>
+        }
+    </span>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <span class="cb-toggle__label">@Label</span>
+    }
+</label>

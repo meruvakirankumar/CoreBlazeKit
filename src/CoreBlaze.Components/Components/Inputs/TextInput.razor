@@ -1,0 +1,29 @@
+@namespace CoreBlaze.Components.Inputs
+@inherits BaseInputComponent<string?>
+@using CoreBlaze.Components.Base
+@using CoreBlaze.Components.Shared
+
+<div class="@RootCssClass">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="cb-input__label" for="@InputId">
+            @Label@(Required ? "*" : null)
+        </label>
+    }
+
+    <input @attributes="AdditionalAttributes"
+           id="@InputId"
+           type="@InputType"
+           class="cb-input__control"
+           value="@CurrentValueAsString"
+           placeholder="@Placeholder"
+           disabled="@Disabled"
+           aria-required="@Required"
+           aria-invalid="@HasValidationErrors"
+           maxlength="@(MaxLength > 0 ? (object)MaxLength : null)"
+           @onchange="e => CurrentValueAsString = e.Value?.ToString()"
+           @onblur="HandleBlurAsync"
+           @onfocus="HandleFocusAsync" />
+
+    <ValidationMessageDisplay Messages="ValidationMessages" />
+</div>

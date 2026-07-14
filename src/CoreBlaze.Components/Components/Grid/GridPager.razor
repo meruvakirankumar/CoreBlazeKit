@@ -1,0 +1,33 @@
+@namespace CoreBlaze.Components.Grid
+
+<div class="cb-pager">
+    <button class="cb-pager__btn"
+            disabled="@(Page <= 1)"
+            @onclick="() => GoTo(1)"
+            aria-label="First page">&laquo;</button>
+    <button class="cb-pager__btn"
+            disabled="@(Page <= 1)"
+            @onclick="() => GoTo(Page - 1)"
+            aria-label="Previous page">&lsaquo;</button>
+
+    <span class="cb-pager__info">
+        Page <strong>@Page</strong> of <strong>@TotalPages</strong>
+        <span class="cb-pager__total">(@TotalItems items)</span>
+    </span>
+
+    <button class="cb-pager__btn"
+            disabled="@(Page >= TotalPages)"
+            @onclick="() => GoTo(Page + 1)"
+            aria-label="Next page">&rsaquo;</button>
+    <button class="cb-pager__btn"
+            disabled="@(Page >= TotalPages)"
+            @onclick="() => GoTo(TotalPages)"
+            aria-label="Last page">&raquo;</button>
+
+    <select class="cb-pager__size" value="@PageSize" @onchange="OnPageSizeChanged">
+        @foreach (var s in PageSizeOptions)
+        {
+            <option value="@s">@s / page</option>
+        }
+    </select>
+</div>

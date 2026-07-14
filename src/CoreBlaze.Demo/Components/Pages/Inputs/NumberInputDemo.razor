@@ -1,0 +1,144 @@
+@page "/inputs/number"
+
+<PageTitle>NumberInput · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>NumberInput&lt;TNumber&gt;</h1>
+    <p class="text-muted">
+        Numeric input generic over the value type — works with <code>int</code>,
+        <code>int?</code>, <code>decimal</code>, <code>double</code>, and their
+        nullable counterparts. Add a <code>Prefix</code> or <code>Suffix</code>
+        for currency symbols, units, or percentages.
+    </p>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="demo-section">
+            <h3>Plain — <code>int</code></h3>
+            <p class="demo-section__hint">Range 0–130, step 1.</p>
+            <NumberInput TNumber="int"
+                         @bind-Value="_age"
+                         Label="Age"
+                         Min="0"
+                         Max="130"
+                         Step="1" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Currency</h3>
+            <p class="demo-section__hint">
+                Use <code>Prefix</code> for the currency symbol and <code>Step="0.01"</code>
+                for cent precision.
+            </p>
+
+            <NumberInput TNumber="decimal"
+                         @bind-Value="_priceUsd"
+                         Label="USD price"
+                         Prefix="$"
+                         Min="0"
+                         Step="0.01"
+                         DecimalPlaces="2"
+                         Placeholder="0.00" />
+
+            <NumberInput TNumber="decimal"
+                         @bind-Value="_priceEur"
+                         Label="EUR price"
+                         Prefix="€"
+                         Suffix="EUR"
+                         Min="0"
+                         Step="0.01"
+                         DecimalPlaces="2"
+                         Placeholder="0.00" />
+
+            <NumberInput TNumber="decimal"
+                         @bind-Value="_priceInr"
+                         Label="INR price"
+                         Prefix="₹"
+                         Min="0"
+                         Step="0.5"
+                         DecimalPlaces="2"
+                         Placeholder="0" />
+
+            <NumberInput TNumber="decimal"
+                         @bind-Value="_priceGbp"
+                         Label="GBP price (suffix only)"
+                         Suffix="GBP"
+                         Min="0"
+                         Step="0.01"
+                         DecimalPlaces="2"
+                         Placeholder="0.00" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Units &amp; percentages</h3>
+            <p class="demo-section__hint">Same adornment API — put any short string in <code>Suffix</code>.</p>
+
+            <NumberInput TNumber="double?"
+                         @bind-Value="_weight"
+                         Label="Weight"
+                         Suffix="kg"
+                         Step="0.1"
+                         Placeholder="Leave blank if unknown" />
+
+            <NumberInput TNumber="decimal"
+                         @bind-Value="_progress"
+                         Label="Completion"
+                         Suffix="%"
+                         Min="0"
+                         Max="100"
+                         Step="0.01"
+                         DecimalPlaces="2"
+                         Placeholder="0.00" />
+
+            <NumberInput TNumber="int"
+                         Value="42"
+                         Label="Disabled example"
+                         Prefix="$"
+                         Disabled="true" />
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="demo-section">
+            <h3>Bound values</h3>
+            <div class="kv">
+                <div class="kv__row"><span class="kv__key">Age (int)</span> <code>@_age</code></div>
+                <div class="kv__row"><span class="kv__key">USD</span> <code>@_priceUsd.ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-US"))</code></div>
+                <div class="kv__row"><span class="kv__key">EUR</span> <code>@_priceEur.ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("de-DE"))</code></div>
+                <div class="kv__row"><span class="kv__key">INR</span> <code>@_priceInr.ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-IN"))</code></div>
+                <div class="kv__row"><span class="kv__key">GBP</span> <code>@_priceGbp.ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("en-GB"))</code></div>
+                <div class="kv__row"><span class="kv__key">Weight</span> <code>@(_weight is null ? "-" : _weight.Value.ToString("0.##")) kg</code></div>
+                <div class="kv__row"><span class="kv__key">Progress</span> <code>@_progress.ToString("0.00") %</code></div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>API</h3>
+            <ul class="api-list">
+                <li><code>TNumber</code> — <code>int</code>, <code>int?</code>, <code>decimal</code>, <code>double?</code>, …</li>
+                <li><code>Value</code> / <code>@@bind-Value</code></li>
+                <li><code>Min</code>, <code>Max</code>, <code>Step</code></li>
+                <li><code>Prefix</code>, <code>Suffix</code> — inline adornments (currency, %, units)</li>
+                <li><code>DecimalPlaces</code> — round the bound value to N digits on parse</li>
+                <li><code>Required</code>, <code>Disabled</code></li>
+                <li><code>OnChange</code>, <code>OnBlur</code>, <code>OnFocus</code></li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h3>Notes on currency</h3>
+            <p class="demo-section__hint">
+                The native <code>&lt;input type="number"&gt;</code> only accepts numeric input —
+                perfect for capturing values, but it can't render thousands separators while typing.
+                Format the display value with a culture-aware format like
+                <code>value.ToString("C2", culture)</code> — as shown in the bound-values panel.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h3>Usage</h3>
+    <CodeSample Code="@_code" />
+</div>

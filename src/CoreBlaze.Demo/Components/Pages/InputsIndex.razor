@@ -1,0 +1,56 @@
+@page "/inputs"
+
+<PageTitle>Inputs · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>Input components</h1>
+    <p class="text-muted">
+        Seven input controls, all built on <code>BaseInputComponent&lt;T&gt;</code> —
+        so label, placeholder, disabled, <code>@@bind-Value</code>, validation, events,
+        and custom CSS behave identically across every one.
+    </p>
+</div>
+
+<div class="component-grid">
+    <a class="component-card" href="inputs/text">
+        <div class="component-card__icon" style="background: linear-gradient(135deg, #6366f1, #a855f7);">Aa</div>
+        <div class="component-card__title">TextInput</div>
+        <p class="component-card__text">Single-line text with two-way binding. Supports <code>text</code>, <code>email</code>, <code>password</code>…</p>
+    </a>
+
+    <a class="component-card" href="inputs/textarea">
+        <div class="component-card__icon" style="background: linear-gradient(135deg, #6366f1, #22d3ee);">≡</div>
+        <div class="component-card__title">TextArea</div>
+        <p class="component-card__text">Multi-line text with configurable rows and optional max length.</p>
+    </a>
+
+    <a class="component-card" href="inputs/number">
+        <div class="component-card__icon" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">123</div>
+        <div class="component-card__title">NumberInput&lt;T&gt;</div>
+        <p class="component-card__text">Generic over the numeric type — <code>int</code>, <code>decimal</code>, <code>double?</code>…</p>
+    </a>
+
+    <a class="component-card" href="inputs/date">
+        <div class="component-card__icon" style="background: linear-gradient(135deg, #10b981, #22d3ee);">📅</div>
+        <div class="component-card__title">DatePicker</div>
+        <p class="component-card__text">Native HTML5 date input bound to <code>DateTime?</code> with min/max.</p>
+    </a>
+
+    <a class="component-card" href="inputs/dropdown">
+        <div class="component-card__icon" style="background: linear-gradient(135deg, #f59e0b, #f97316);">▾</div>
+        <div class="component-card__title">Dropdown</div>
+        <p class="component-card__text">Single-select generic over the item and value type.</p>
+    </a>
+
+    <a class="component-card" href="inputs/multiselect">
+        <div class="component-card__icon" style="background: linear-gradient(135deg, #a855f7, #ec4899);">☑</div>
+        <div class="component-card__title">MultiSelectDropdown</div>
+        <p class="component-card__text">Popup panel with checkboxes, plus chip / text display modes.</p>
+    </a>
+
+    <a class="component-card" href="inputs/fileupload">
+        <div class="component-card__icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">☁</div>
+        <div class="component-card__title">FileUpload</div>
+        <p class="component-card__text">Drag-and-drop or click to browse. Binds to <code>IReadOnlyList&lt;IBrowserFile&gt;</code>.</p>
+    </a>
+</div>

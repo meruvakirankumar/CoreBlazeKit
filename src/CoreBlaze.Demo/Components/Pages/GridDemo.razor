@@ -1,0 +1,151 @@
+@page "/grid"
+
+<PageTitle>DataGrid · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>DataGrid&lt;T&gt;</h1>
+    <p class="text-muted">
+        Sortable headers, per-column filter row, global search, paging, row-/cell-mode
+        editing, row selection, and CSV export. Row highlights reflect tracked
+        <code>RowState</code>.
+    </p>
+</div>
+
+<div class="demo-section">
+    <div class="grid-controls">
+        <div>
+            <div class="grid-controls__label">Edit mode</div>
+            <div class="segmented">
+                <button type="button"
+                        class="segmented__btn @(_mode == GridEditMode.Row ? "segmented__btn--active" : null)"
+                        @onclick="() => _mode = GridEditMode.Row">Row</button>
+                <button type="button"
+                        class="segmented__btn @(_mode == GridEditMode.Cell ? "segmented__btn--active" : null)"
+                        @onclick="() => _mode = GridEditMode.Cell">Cell (dbl-click)</button>
+            </div>
+        </div>
+        <div>
+            <div class="grid-controls__label">Selection mode</div>
+            <div class="segmented">
+                <button type="button"
+                        class="segmented__btn @(_selection == GridSelectionMode.None ? "segmented__btn--active" : null)"
+                        @onclick="() => _selection = GridSelectionMode.None">Off</button>
+                <button type="button"
+                        class="segmented__btn @(_selection == GridSelectionMode.Single ? "segmented__btn--active" : null)"
+                        @onclick="() => _selection = GridSelectionMode.Single">Single</button>
+                <button type="button"
+                        class="segmented__btn @(_selection == GridSelectionMode.Multiple ? "segmented__btn--active" : null)"
+                        @onclick="() => _selection = GridSelectionMode.Multiple">Multiple</button>
+            </div>
+        </div>
+        <div class="text-muted">
+            Try searching, sorting, editing (Enter to save, Esc to cancel), or exporting.
+        </div>
+    </div>
+
+    <DataGrid T="Person"
+              @ref="_grid"
+              Title="People"
+              Data="_people"
+              EditMode="_mode"
+              SelectionMode="_selection"
+              @bind-SelectedItems="_selectedPeople"
+              EnableGlobalSearch="true"
+              SearchPlaceholder="Search people…"
+              ExportFormats="GridExportFormat.All"
+              ExportFileName="people"
+              PdfTitle="People — CoreBlaze Demo"
+              PageSize="5"
+              OnRowSaved="OnRowSaved"
+              OnRowDeleted="OnRowDeleted">
+        <Columns>
+            <GridColumn T="Person" Field="Id"         Title="ID"         Width="4rem" Editable="false" />
+            <GridColumn T="Person" Field="Name"       Title="Name" />
+            <GridColumn T="Person" Field="Age"        Title="Age"        Width="6rem" />
+
+            <GridColumn T="Person" Field="Department" Title="Department">
+                <EditTemplate Context="row">
+                    <Dropdown TItem="string" TValue="string"
+                              Items="Repo.Departments"
+                              ValueSelector="x => x"
+                              TextSelector="x => x"
+                              Value="row.Department"
+                              ValueChanged="v => row.Department = v"
+                              ValueExpression="() => row.Department" />
+                </EditTemplate>
+            </GridColumn>
+
+            <GridColumn T="Person" Field="HireDate"   Title="Hire date"  Format="d" />
+
+            <GridColumn T="Person" Field="IsActive"   Title="Active"     Width="7rem">
+                <Template Context="row">
+                    @if (row.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </Template>
+            </GridColumn>
+        </Columns>
+    </DataGrid>
+</div>
+
+@if (_lastEvent is not null)
+{
+    <div class="alert alert-info">@_lastEvent</div>
+}
+
+@if (_selectedPeople is not null && _selectedPeople.Count > 0)
+{
+    <div class="demo-section">
+        <h3>Selected rows (@_selectedPeople.Count)</h3>
+        <p class="demo-section__hint">Two-way bound via <code>@@bind-SelectedItems</code>.</p>
+        <ul class="mb-0">
+            @foreach (var p in _selectedPeople)
+            {
+                <li><strong>@p.Name</strong> — @p.Department</li>
+            }
+        </ul>
+    </div>
+}
+
+@{
+    var tracked = _grid is null
+        ? Enumerable.Empty<(Person Person, RowState State)>()
+        : _people
+            .Select(p => (Person: p, State: _grid.GetRowState(p)))
+            .Where(x => x.State != RowState.Unchanged)
+            .ToList();
+}
+
+@if (tracked.Any())
+{
+    <div class="demo-section">
+        <h3>Tracked row state</h3>
+        <p class="demo-section__hint">Rows the grid has touched since the page loaded.</p>
+        <table class="table table-sm w-auto mb-0">
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>State</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var (person, state) in tracked)
+                {
+                    <tr>
+                        <td>@person.Id</td>
+                        <td>@person.Name</td>
+                        <td><span class="badge state-@state.ToString().ToLowerInvariant()">@state</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<div class="demo-section">
+    <h3>Usage</h3>
+    <p class="demo-section__hint">Full markup that produces the grid above.</p>
+    <CodeSample Code="@_code" />
+</div>

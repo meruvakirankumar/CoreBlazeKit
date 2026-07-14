@@ -1,0 +1,11 @@
+@namespace CoreBlaze.Components.Shared
+
+@if (Messages is not null && Messages.Any())
+{
+    <div class="cb-validation" role="alert">
+        @foreach (var m in Messages)
+        {
+            <div class="cb-validation__message">@m</div>
+        }
+    </div>
+}

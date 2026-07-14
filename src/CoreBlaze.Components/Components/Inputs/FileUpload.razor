@@ -1,0 +1,46 @@
+@namespace CoreBlaze.Components.Inputs
+@inherits BaseInputComponent<IReadOnlyList<IBrowserFile>>
+@using Microsoft.AspNetCore.Components.Forms
+@using CoreBlaze.Components.Base
+@using CoreBlaze.Components.Shared
+
+<div class="@RootCssClass">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="cb-input__label" for="@InputId">
+            @Label@(Required ? "*" : null)
+        </label>
+    }
+
+    <label class="cb-fileupload__dropzone @(IsDragOver ? "cb-fileupload__dropzone--over" : null)"
+           for="@InputId"
+           @ondragenter:preventDefault="true"
+           @ondragenter="() => IsDragOver = true"
+           @ondragover:preventDefault="true"
+           @ondragleave="() => IsDragOver = false"
+           @ondrop:preventDefault="true"
+           @ondrop="() => IsDragOver = false">
+        <div class="cb-fileupload__icon" aria-hidden="true">↑</div>
+        <div class="cb-fileupload__text">
+            @if (Value is null || Value.Count == 0)
+            {
+                <strong>@(Placeholder ?? "Drop files here")</strong>
+                <span>or click to browse</span>
+            }
+            else
+            {
+                <strong>@Value.Count file(s) selected</strong>
+                <span>@string.Join(", ", Value.Select(f => f.Name))</span>
+            }
+        </div>
+
+        <InputFile id="@InputId"
+                   OnChange="OnFilesSelectedAsync"
+                   multiple="@Multiple"
+                   accept="@Accept"
+                   disabled="@Disabled"
+                   class="cb-fileupload__native" />
+    </label>
+
+    <ValidationMessageDisplay Messages="ValidationMessages" />
+</div>

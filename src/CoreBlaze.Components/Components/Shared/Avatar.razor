@@ -1,0 +1,23 @@
+@namespace CoreBlaze.Components.Shared
+
+<div class="cb-avatar cb-avatar--@SizeClass cb-avatar--@ShapeClass @CssClass"
+     style="@(_colorStyle)"
+     title="@Name"
+     aria-label="@(Name ?? "Avatar")">
+    @if (!string.IsNullOrEmpty(Src))
+    {
+        <img src="@Src" alt="@(Name ?? "avatar")" class="cb-avatar__img" />
+    }
+    else if (HasIcon)
+    {
+        <span class="cb-avatar__icon" aria-hidden="true">@Icon</span>
+    }
+    else
+    {
+        <span class="cb-avatar__initials" aria-hidden="true">@Initials</span>
+    }
+    @if (ChildContent is not null)
+    {
+        <div class="cb-avatar__badge">@ChildContent</div>
+    }
+</div>

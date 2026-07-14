@@ -1,0 +1,29 @@
+@namespace CoreBlaze.Components.Shared
+@using CoreBlaze.Components.Models
+@using CoreBlaze.Components.Services
+@inject ToastService ToastService
+@implements IDisposable
+
+<div class="cb-toaster cb-toaster--@Position.ToString().ToLowerInvariant()"
+     aria-live="polite" role="region" aria-label="Notifications">
+    @foreach (var t in _toasts)
+    {
+        var variant = t.Variant.ToString().ToLowerInvariant();
+        <div class="cb-toast cb-toast--@variant" role="status" @key="t.Id">
+            <div class="cb-toast__icon" aria-hidden="true">@IconFor(t.Variant)</div>
+            <div class="cb-toast__body">
+                @if (!string.IsNullOrEmpty(t.Title))
+                {
+                    <div class="cb-toast__title">@t.Title</div>
+                }
+                <div class="cb-toast__message">@t.Message</div>
+            </div>
+            @if (t.Dismissible)
+            {
+                <button type="button" class="cb-toast__close"
+                        aria-label="Dismiss"
+                        @onclick="() => ToastService.Dismiss(t.Id)">×</button>
+            }
+        </div>
+    }
+</div>

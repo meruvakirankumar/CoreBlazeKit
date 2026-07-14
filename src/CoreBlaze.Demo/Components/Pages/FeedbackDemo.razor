@@ -1,0 +1,99 @@
+@page "/feedback"
+
+<PageTitle>Feedback · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>Feedback components</h1>
+    <p class="text-muted">
+        <code>ToastService</code> + <code>Toaster</code> for non-blocking notifications,
+        and <code>Modal</code> for dialogs and confirmations.
+    </p>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="demo-section">
+            <h3>Toasts</h3>
+            <p class="demo-section__hint">Fire from anywhere — the <code>Toaster</code> in the layout picks them up.</p>
+
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-secondary btn-sm"
+                        @onclick="@(() => Toasts.Info("Just so you know — the DataGrid supports multi-column sort.", "Tip"))">
+                    Info
+                </button>
+                <button class="btn btn-outline-secondary btn-sm"
+                        @onclick="@(() => Toasts.Success("Your changes were saved.", "Saved"))">
+                    Success
+                </button>
+                <button class="btn btn-outline-secondary btn-sm"
+                        @onclick="@(() => Toasts.Warning("You have unsaved changes on the current row.", "Careful"))">
+                    Warning
+                </button>
+                <button class="btn btn-outline-secondary btn-sm"
+                        @onclick="@(() => Toasts.Error("Failed to save the row. Please try again.", "Save failed"))">
+                    Error
+                </button>
+                <button class="btn btn-outline-secondary btn-sm"
+                        @onclick="@(() => Toasts.Info("This one stays until you dismiss it.", duration: TimeSpan.Zero))">
+                    Sticky
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" @onclick="Toasts.Clear">
+                    Clear all
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="demo-section">
+            <h3>Modal</h3>
+            <p class="demo-section__hint">Two-way bindable via <code>@@bind-IsOpen</code>. Four size presets.</p>
+
+            <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-outline-secondary btn-sm" @onclick="@(() => _size = ModalSize.Small)">
+                    Small confirmation
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" @onclick="@(() => _size = ModalSize.Medium)">
+                    Medium (default)
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" @onclick="@(() => _size = ModalSize.Large)">
+                    Large
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" @onclick="@(() => _size = ModalSize.ExtraLarge)">
+                    XL
+                </button>
+            </div>
+
+            <div class="mt-3">
+                <button class="btn btn-primary" @onclick="@(() => _modalOpen = true)">Open modal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h3>Usage</h3>
+    <CodeSample Code="@_code" />
+</div>
+
+<Modal @bind-IsOpen="_modalOpen"
+       Title="@GetTitle()"
+       Size="_size">
+    <ChildContent>
+        <p>
+            This is a general-purpose modal from
+            <code>CoreBlaze.Components.Shared.Modal</code>.
+            Put any content here — forms, tables, images.
+        </p>
+        <p class="text-muted mb-0">
+            Click outside the dialog, press the <kbd>×</kbd>, or use the buttons below to close.
+        </p>
+    </ChildContent>
+
+    <Footer>
+        <button class="btn btn-outline-secondary" @onclick="@(() => _modalOpen = false)">Cancel</button>
+        <button class="btn btn-primary" @onclick="OnConfirm">
+            Confirm
+        </button>
+    </Footer>
+</Modal>

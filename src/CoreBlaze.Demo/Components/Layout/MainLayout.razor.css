@@ -1,0 +1,120 @@
+/* Layout shell — modern sidebar + topbar */
+
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--app-bg);
+    color: var(--app-text);
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* allow flex children to shrink */
+}
+
+/* -------- Sidebar -------- */
+.sidebar {
+    background: linear-gradient(180deg, #1e1b4b 0%, #312e81 45%, #4c1d95 100%);
+    color: rgba(255,255,255,0.9);
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar__brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #22d3ee 0%, #4f46e5 100%);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);
+}
+
+.sidebar__brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+.sidebar__brand-title { color: #fff; font-weight: 600; }
+.sidebar__brand-sub { color: rgba(255,255,255,0.6); font-size: 0.75rem; margin-top: 0.15rem; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* -------- Topbar -------- */
+.topbar {
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    background-color: var(--app-bg-elev);
+    border-bottom: 1px solid var(--app-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: saturate(140%) blur(4px);
+}
+
+.topbar__breadcrumb { display: flex; flex-direction: column; line-height: 1.1; }
+.topbar__eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--app-text-mute);
+    font-weight: 600;
+}
+.topbar__title { font-weight: 600; color: var(--app-text); font-size: 0.95rem; }
+
+.topbar__actions { display: flex; gap: 0.5rem; align-items: center; }
+.topbar__actions .btn { font-size: 0.85rem; }
+
+/* -------- Responsive -------- */
+@media (max-width: 640.98px) {
+    .topbar { padding: 0 1rem; }
+}
+
+@media (min-width: 641px) {
+    .page { flex-direction: row; }
+    .sidebar {
+        width: 260px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        flex-shrink: 0;
+    }
+    .content { padding-left: 2rem !important; padding-right: 2rem !important; }
+}
+
+/* -------- Error UI (unchanged behaviour, freshened look) -------- */
+#blazor-error-ui {
+    background: #fff8db;
+    color: #7c5000;
+    border-top: 1px solid #fbbf24;
+    bottom: 0;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    left: 0;
+    padding: 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    font-size: 0.9rem;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}

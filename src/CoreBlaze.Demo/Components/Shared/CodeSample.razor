@@ -1,0 +1,23 @@
+@namespace CoreBlaze.Demo.Components.Shared
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<div class="code-sample @(_expanded ? "code-sample--expanded" : null)">
+    <div class="code-sample__toolbar">
+        <span class="code-sample__lang">@Language</span>
+        <div class="code-sample__actions">
+            <button type="button" class="code-sample__btn"
+                    @onclick="() => _expanded = !_expanded"
+                    aria-label="@(_expanded ? "Collapse" : "Expand")"
+                    title="@(_expanded ? "Collapse" : "Expand")">
+                @(_expanded ? "▲" : "▼")
+            </button>
+            <button type="button" class="code-sample__btn code-sample__copy"
+                    @onclick="CopyAsync"
+                    title="Copy to clipboard">
+                @(_copied ? "✓ Copied" : "📋 Copy")
+            </button>
+        </div>
+    </div>
+    <pre class="code-sample__body"><code>@Code</code></pre>
+</div>

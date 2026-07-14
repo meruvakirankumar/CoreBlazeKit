@@ -1,0 +1,320 @@
+@page "/display"
+
+<PageTitle>Display · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>Display components</h1>
+    <p class="text-muted">
+        Badge, Progress bar, Alert/Banner, Toggle, and Avatar — all built on the same CSS-variable
+        theming system and dark-mode ready.
+    </p>
+</div>
+
+<Tabs>
+    <ChildContent>
+
+        <!-- ═══════════════════════════════════════════════════════ Badge ══ -->
+        <Tab Title="Badge" Icon="🔢">
+            <div class="row g-3">
+                <div class="col-lg-8">
+                    <div class="demo-section">
+                        <h3>Standalone</h3>
+                        <p class="demo-section__hint">Pill labels — text, count, and dot variants.</p>
+                        <Stack Direction="StackDirection.Row" Gap="3" Align="StackAlign.Center" Wrap="true">
+                            <Badge Text="New" Variant="BadgeVariant.Primary" />
+                            <Badge Text="Hot" Variant="BadgeVariant.Error" />
+                            <Badge Text="Beta" Variant="BadgeVariant.Warning" />
+                            <Badge Text="Done" Variant="BadgeVariant.Success" />
+                            <Badge Text="Draft" Variant="BadgeVariant.Neutral" />
+                            <Badge Count="3" Variant="BadgeVariant.Primary" />
+                            <Badge Count="42" Variant="BadgeVariant.Error" />
+                            <Badge Count="999" Max="99" Variant="BadgeVariant.Primary" />
+                        </Stack>
+                    </div>
+
+                    <div class="demo-section">
+                        <h3>Anchored</h3>
+                        <p class="demo-section__hint">Wrap any element — the badge pins to its top-right corner.</p>
+                        <Stack Direction="StackDirection.Row" Gap="5" Align="StackAlign.Center" Wrap="true">
+                            <Badge Count="5" Variant="BadgeVariant.Error">
+                                <button class="btn btn-outline-secondary">Notifications</button>
+                            </Badge>
+                            <Badge Count="12" Variant="BadgeVariant.Primary">
+                                <div class="avatar-placeholder-sm">CB</div>
+                            </Badge>
+                            <Badge Dot="true" Variant="BadgeVariant.Success">
+                                <div class="avatar-placeholder-sm">AA</div>
+                            </Badge>
+                            <Badge Dot="true" Variant="BadgeVariant.Warning">
+                                <button class="btn btn-outline-secondary">Settings</button>
+                            </Badge>
+                        </Stack>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="demo-section">
+                        <h3>API</h3>
+                        <ul class="api-list">
+                            <li><code>Count</code> — numeric (shows Max+ when exceeded)</li>
+                            <li><code>Max</code> — cap before "99+" (default 99)</li>
+                            <li><code>Text</code> — custom string</li>
+                            <li><code>Dot</code> — tiny dot, no text</li>
+                            <li><code>Variant</code> — Primary / Success / Warning / Error / Neutral</li>
+                            <li><code>ChildContent</code> — anchors badge to wrapped element</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </Tab>
+
+        <!-- ════════════════════════════════════════════════ Progress ══ -->
+        <Tab Title="Progress" Icon="📶">
+            <div class="row g-3">
+                <div class="col-lg-8">
+                    <div class="demo-section">
+                        <h3>Variants</h3>
+                        <p class="demo-section__hint">Four colour intents + size presets.</p>
+                        <Stack Direction="StackDirection.Column" Gap="3">
+                            <ProgressBar Value="72"  Variant="ProgressVariant.Primary" ShowLabel="true" />
+                            <ProgressBar Value="55"  Variant="ProgressVariant.Success" Size="ProgressSize.Medium" />
+                            <ProgressBar Value="38"  Variant="ProgressVariant.Warning" />
+                            <ProgressBar Value="20"  Variant="ProgressVariant.Error" />
+                            <ProgressBar Value="_uploadProgress" Variant="ProgressVariant.Primary" Size="ProgressSize.Large" ShowLabel="true" />
+                        </Stack>
+                    </div>
+
+                    <div class="demo-section">
+                        <h3>Animated upload</h3>
+                        <p class="demo-section__hint">Simulates a real incremental progress update.</p>
+                        <ProgressBar Value="_uploadProgress" Variant="@(_uploading ? ProgressVariant.Primary : ProgressVariant.Success)"
+                                     ShowLabel="true" Striped="_uploading" />
+                        <Stack Direction="StackDirection.Row" Gap="2" Align="StackAlign.Center" CssClass="mt-2">
+                            <button class="btn btn-sm btn-primary" @onclick="StartUploadAsync" disabled="@_uploading">
+                                @if (_uploading)
+                                {
+                                    <Spinner Size="SpinnerSize.Small" />
+                                    <span class="ms-2">Uploading…</span>
+                                }
+                                else { <span>Start upload</span> }
+                            </button>
+                            @if (_uploading)
+                            {
+                                <button class="btn btn-sm btn-outline-secondary" @onclick="StopUpload">Cancel</button>
+                            }
+                        </Stack>
+                    </div>
+
+                    <div class="demo-section">
+                        <h3>Indeterminate</h3>
+                        <p class="demo-section__hint">Use when the total duration is unknown.</p>
+                        <ProgressBar Indeterminate="true" Variant="ProgressVariant.Primary" />
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="demo-section">
+                        <h3>API</h3>
+                        <ul class="api-list">
+                            <li><code>Value</code>, <code>Max</code> (default 100)</li>
+                            <li><code>Variant</code> — Primary / Success / Warning / Error</li>
+                            <li><code>Size</code> — Small / Medium / Large</li>
+                            <li><code>ShowLabel</code> — percentage in the bar</li>
+                            <li><code>LabelText</code> — custom text instead of %</li>
+                            <li><code>Striped</code> — animated diagonal pattern</li>
+                            <li><code>Indeterminate</code> — bouncing bar</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </Tab>
+
+        <!-- ══════════════════════════════════════════════════ Alert ══ -->
+        <Tab Title="Alert" Icon="💬">
+            <div class="row g-3">
+                <div class="col-lg-8">
+                    <div class="demo-section">
+                        <h3>Variants</h3>
+                        <p class="demo-section__hint">Stays in the document flow — use for form feedback, warnings, announcements.</p>
+                        <Stack Direction="StackDirection.Column" Gap="3">
+                            <Alert Variant="AlertVariant.Info" Title="New features available">
+                                The DataGrid now supports multi-column sort (Shift+click header) and CSV/Excel/PDF export.
+                            </Alert>
+                            <Alert Variant="AlertVariant.Success" Title="Changes saved">
+                                All 3 rows were updated and the export was emailed to the team.
+                            </Alert>
+                            <Alert Variant="AlertVariant.Warning" Title="Unsaved changes">
+                                You have pending edits. Navigate away and they will be lost.
+                            </Alert>
+                            <Alert Variant="AlertVariant.Error" Title="Save failed" Dismissible="true">
+                                The server returned a 500 error. Please try again or contact support.
+                            </Alert>
+                        </Stack>
+                    </div>
+
+                    <div class="demo-section">
+                        <h3>No title — body only</h3>
+                        <Stack Direction="StackDirection.Column" Gap="2">
+                            <Alert Variant="AlertVariant.Info" Dismissible="true">
+                                Tip: use <kbd>Shift+Click</kbd> on a grid column header to add a secondary sort.
+                            </Alert>
+                            <Alert Variant="AlertVariant.Success">
+                                Your profile was updated.
+                            </Alert>
+                        </Stack>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="demo-section">
+                        <h3>API</h3>
+                        <ul class="api-list">
+                            <li><code>Variant</code> — Info / Success / Warning / Error</li>
+                            <li><code>Title</code> — bold heading (optional)</li>
+                            <li><code>ChildContent</code> — body text / markup</li>
+                            <li><code>Dismissible</code> — shows × button</li>
+                            <li><code>OnDismissed</code> — callback when hidden</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </Tab>
+
+        <!-- ══════════════════════════════════════════════ Toggle ══ -->
+        <Tab Title="Toggle" Icon="🔛">
+            <div class="row g-3">
+                <div class="col-lg-8">
+                    <div class="demo-section">
+                        <h3>Settings panel example</h3>
+                        <p class="demo-section__hint">iOS-style switches with three size presets.</p>
+                        <Stack Direction="StackDirection.Column" Gap="4">
+                            <div class="settings-row">
+                                <div>
+                                    <div class="settings-row__title">Push notifications</div>
+                                    <div class="settings-row__sub">Alerts for messages and updates</div>
+                                </div>
+                                <Toggle @bind-Value="_notifications" Size="ToggleSize.Medium" />
+                            </div>
+                            <Divider />
+                            <div class="settings-row">
+                                <div>
+                                    <div class="settings-row__title">Dark mode</div>
+                                    <div class="settings-row__sub">Reduce eye strain in low light</div>
+                                </div>
+                                <Toggle @bind-Value="_darkMode" Size="ToggleSize.Medium" />
+                            </div>
+                            <Divider />
+                            <div class="settings-row">
+                                <div>
+                                    <div class="settings-row__title">Analytics</div>
+                                    <div class="settings-row__sub">Help us improve by sharing usage data</div>
+                                </div>
+                                <Toggle @bind-Value="_analytics" Size="ToggleSize.Medium" />
+                            </div>
+                        </Stack>
+                    </div>
+
+                    <div class="demo-section">
+                        <h3>Sizes</h3>
+                        <Stack Direction="StackDirection.Row" Gap="4" Align="StackAlign.Center">
+                            <Toggle @bind-Value="_notifications" Size="ToggleSize.Small"  Label="Small" />
+                            <Toggle @bind-Value="_notifications" Size="ToggleSize.Medium" Label="Medium" />
+                            <Toggle @bind-Value="_notifications" Size="ToggleSize.Large"  Label="Large" />
+                            <Toggle Value="false" Size="ToggleSize.Medium" Label="Disabled" Disabled="true" />
+                        </Stack>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="demo-section">
+                        <h3>Bound state</h3>
+                        <div class="kv">
+                            <div class="kv__row"><span class="kv__key">Notifications</span> <code>@_notifications</code></div>
+                            <div class="kv__row"><span class="kv__key">Dark mode</span>      <code>@_darkMode</code></div>
+                            <div class="kv__row"><span class="kv__key">Analytics</span>      <code>@_analytics</code></div>
+                        </div>
+                    </div>
+                    <div class="demo-section">
+                        <h3>API</h3>
+                        <ul class="api-list">
+                            <li><code>@@bind-Value</code> — bool</li>
+                            <li><code>Label</code> — side label</li>
+                            <li><code>OnText</code> / <code>OffText</code> — in-track text</li>
+                            <li><code>Size</code> — Small / Medium / Large</li>
+                            <li><code>Disabled</code></li>
+                            <li><code>OnChange</code> — <code>EventCallback&lt;bool&gt;</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </Tab>
+
+        <!-- ══════════════════════════════════════════════ Avatar ══ -->
+        <Tab Title="Avatar" Icon="👤">
+            <div class="row g-3">
+                <div class="col-lg-8">
+                    <div class="demo-section">
+                        <h3>Initials — auto colour from name</h3>
+                        <p class="demo-section__hint">The colour is derived from a hash of the name — same name always produces the same colour.</p>
+                        <Stack Direction="StackDirection.Row" Gap="3" Align="StackAlign.Center" Wrap="true">
+                            @foreach (var p in Repo.GetAll().Take(8))
+                            {
+                                <Avatar Name="@p.Name" />
+                            }
+                        </Stack>
+                    </div>
+
+                    <div class="demo-section">
+                        <h3>Sizes</h3>
+                        <Stack Direction="StackDirection.Row" Gap="3" Align="StackAlign.Center">
+                            <Avatar Name="Alice Anderson" Size="AvatarSize.XSmall" />
+                            <Avatar Name="Alice Anderson" Size="AvatarSize.Small" />
+                            <Avatar Name="Alice Anderson" Size="AvatarSize.Medium" />
+                            <Avatar Name="Alice Anderson" Size="AvatarSize.Large" />
+                            <Avatar Name="Alice Anderson" Size="AvatarSize.XLarge" />
+                        </Stack>
+                    </div>
+
+                    <div class="demo-section">
+                        <h3>Shapes &amp; overlays</h3>
+                        <Stack Direction="StackDirection.Row" Gap="4" Align="StackAlign.Center" Wrap="true">
+                            <Avatar Name="Bob Baker" Shape="AvatarShape.Circle" Size="AvatarSize.Large">
+                                <span class="cb-avatar-dot"></span>
+                            </Avatar>
+                            <Avatar Name="Carol Chen" Shape="AvatarShape.Rounded" Size="AvatarSize.Large">
+                                <Badge Count="3" Variant="BadgeVariant.Error" />
+                            </Avatar>
+                            <Avatar Icon="🤖" Shape="AvatarShape.Circle" Size="AvatarSize.Large"
+                                    Color="#0891b2" />
+                            <Avatar Icon="🌍" Shape="AvatarShape.Rounded" Size="AvatarSize.Large"
+                                    Color="#059669" />
+                        </Stack>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="demo-section">
+                        <h3>API</h3>
+                        <ul class="api-list">
+                            <li><code>Src</code> — image URL (optional)</li>
+                            <li><code>Name</code> — full name for initials + title tooltip</li>
+                            <li><code>Icon</code> — emoji / symbol instead of initials</li>
+                            <li><code>Color</code> — override background colour</li>
+                            <li><code>Size</code> — XSmall / Small / Medium / Large / XLarge</li>
+                            <li><code>Shape</code> — Circle / Rounded</li>
+                            <li><code>ChildContent</code> — badge/dot overlay slot</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </Tab>
+
+    </ChildContent>
+</Tabs>
+
+<style>
+    .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .settings-row__title { font-weight: 500; margin-bottom: 0.1rem; }
+    .settings-row__sub { font-size: .82rem; color: var(--app-text-mute); }
+    .avatar-placeholder-sm {
+        width: 2.25rem; height: 2.25rem; border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #22d3ee);
+        color: #fff; font-weight: 700; font-size: .8rem;
+        display: inline-flex; align-items: center; justify-content: center;
+    }
+</style>

@@ -1,0 +1,52 @@
+/* Grid demo — segmented control + state badges */
+
+.grid-controls {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.grid-controls__label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--app-text-mute);
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+
+.segmented {
+    display: inline-flex;
+    padding: 0.2rem;
+    background-color: var(--app-code-bg);
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+}
+
+.segmented__btn {
+    background: transparent;
+    border: 0;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--app-text-mute);
+    border-radius: 0.35rem;
+    cursor: pointer;
+    transition: all 120ms ease;
+}
+
+.segmented__btn:hover { color: var(--app-text); }
+
+.segmented__btn--active {
+    background-color: var(--app-bg-elev);
+    color: var(--app-text);
+    box-shadow: 0 1px 2px rgba(15,23,42,0.08);
+}
+
+/* Row-state badges */
+::deep .badge.state-added    { background-color: #16a34a !important; color: #fff; }
+::deep .badge.state-modified { background-color: #f59e0b !important; color: #fff; }
+::deep .badge.state-deleted  { background-color: #dc2626 !important; color: #fff; }

@@ -1,0 +1,86 @@
+@page "/inputs/text"
+
+<PageTitle>TextInput · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>TextInput</h1>
+    <p class="text-muted">
+        Single-line text input with two-way binding, validation, events, and support
+        for the native HTML5 <code>type</code> attribute (<code>text</code>,
+        <code>email</code>, <code>password</code>, <code>url</code>, …).
+    </p>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="demo-section">
+            <h3>Playground</h3>
+            <p class="demo-section__hint">Two-way bound, required, with a max length and change event.</p>
+            <TextInput @bind-Value="_name"
+                       Label="Name"
+                       Placeholder="Type your name"
+                       MaxLength="80"
+                       Required="true"
+                       OnChange="OnNameChanged" />
+        </div>
+
+        <div class="demo-section">
+            <h3>Variations</h3>
+            <TextInput @bind-Value="_email"
+                       Label="Email"
+                       InputType="email"
+                       Placeholder="you@example.com" />
+
+            <TextInput @bind-Value="_password"
+                       Label="Password"
+                       InputType="password"
+                       Placeholder="At least 6 characters" />
+
+            <TextInput @bind-Value="_url"
+                       Label="Website"
+                       InputType="url"
+                       Placeholder="https://example.com" />
+
+            <TextInput Label="Disabled example"
+                       Value="You can't edit me"
+                       Disabled="true" />
+
+            <TextInput @bind-Value="_errorText"
+                       Label="Error example"
+                       Placeholder="Fix me…"
+                       ErrorMessage="@(string.IsNullOrWhiteSpace(_errorText) ? "Something went wrong." : null)" />
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="demo-section">
+            <h3>Bound values</h3>
+            <div class="kv">
+                <div class="kv__row"><span class="kv__key">Name</span> <code>@(_name ?? "-")</code></div>
+                <div class="kv__row"><span class="kv__key">Email</span> <code>@(_email ?? "-")</code></div>
+                <div class="kv__row"><span class="kv__key">Password</span> <code>@(_password is null ? "-" : new string('•', _password.Length))</code></div>
+                <div class="kv__row"><span class="kv__key">URL</span> <code>@(_url ?? "-")</code></div>
+                <div class="kv__row"><span class="kv__key">Last event</span> <code>@(_lastEvent ?? "-")</code></div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>API</h3>
+            <ul class="api-list">
+                <li><code>Value</code> / <code>@@bind-Value</code> — bound string?</li>
+                <li><code>Label</code>, <code>Placeholder</code></li>
+                <li><code>InputType</code> — <code>text</code> (default), <code>email</code>, <code>password</code>, <code>url</code>, <code>tel</code>…</li>
+                <li><code>MaxLength</code> — omitted when unset</li>
+                <li><code>Required</code>, <code>Disabled</code></li>
+                <li><code>OnChange</code>, <code>OnBlur</code>, <code>OnFocus</code></li>
+                <li><code>ErrorMessage</code>, <code>CssClass</code></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h3>Usage</h3>
+    <p class="demo-section__hint">Copy this to try it in your own project.</p>
+    <CodeSample Code="@_code" />
+</div>

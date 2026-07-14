@@ -1,0 +1,105 @@
+@page "/layout/custom"
+
+<PageTitle>Custom Layouts · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>Custom layouts</h1>
+    <p class="text-muted">
+        Four reusable page-level patterns — Centered, Split, Dashboard, and
+        Detail/Master — built from CSS variables and the <code>Stack</code>
+        primitive. Each preview is a live miniature with copyable code.
+    </p>
+</div>
+
+<Tabs>
+    <ChildContent>
+
+        <!-- ── Centered layout ─────────────────────────────── -->
+        <Tab Title="Centered" Icon="🎯">
+            <div class="layout-preview layout-preview--centered">
+                <div class="lp-topbar-full">MyApp</div>
+                <div class="lp-centered-body">
+                    <div class="lp-centered-panel">
+                        <div class="lp-card-title">Sign in</div>
+                        <div class="lp-field"></div>
+                        <div class="lp-field"></div>
+                        <div class="lp-btn">Submit</div>
+                    </div>
+                </div>
+            </div>
+            <Divider Label="Usage" CssClass="my-3" />
+            <CodeSample Language="css" Code="@_centeredCss" />
+            <p class="demo-section__hint mt-2">
+                Ideal for: login, register, forgot-password, 404 pages.
+            </p>
+        </Tab>
+
+        <!-- ── Split layout ──────────────────────────────────── -->
+        <Tab Title="Split panel" Icon="⫥">
+            <div class="layout-preview layout-preview--split">
+                <div class="lp-split-left">
+                    <div class="lp-card-title" style="color:#fff">Brand</div>
+                    <div class="lp-split-tagline">Subtitle text here.</div>
+                </div>
+                <div class="lp-split-right">
+                    <div class="lp-card-title">Sign in</div>
+                    <div class="lp-field"></div>
+                    <div class="lp-field"></div>
+                    <div class="lp-btn">Submit</div>
+                </div>
+            </div>
+            <Divider Label="Usage" CssClass="my-3" />
+            <CodeSample Language="css" Code="@_splitCss" />
+            <p class="demo-section__hint mt-2">
+                Ideal for: marketing + auth pages, onboarding flows.
+            </p>
+        </Tab>
+
+        <!-- ── Dashboard grid ────────────────────────────────── -->
+        <Tab Title="Dashboard" Icon="📊">
+            <div class="layout-preview layout-preview--dashboard">
+                <div class="lp-topbar-thin">Dashboard</div>
+                <div class="lp-stat-row">
+                    <div class="lp-stat">Sales<br /><strong>$12k</strong></div>
+                    <div class="lp-stat">Users<br /><strong>382</strong></div>
+                    <div class="lp-stat">Orders<br /><strong>56</strong></div>
+                    <div class="lp-stat">Churn<br /><strong>2.1%</strong></div>
+                </div>
+                <div class="lp-dash-row">
+                    <div class="lp-chart lp-chart--wide">Chart</div>
+                    <div class="lp-chart">Pie</div>
+                </div>
+                <div class="lp-dash-row">
+                    <div class="lp-table">Table</div>
+                </div>
+            </div>
+            <Divider Label="Usage" CssClass="my-3" />
+            <CodeSample Language="css" Code="@_dashCss" />
+            <p class="demo-section__hint mt-2">
+                Ideal for: analytics, admin dashboards, reporting tools.
+            </p>
+        </Tab>
+
+        <!-- ── Master/detail ─────────────────────────────────── -->
+        <Tab Title="Master/detail" Icon="🗂">
+            <div class="layout-preview layout-preview--masterdetail">
+                <div class="lp-master">
+                    <div class="lp-list-item lp-list-item--active">Alice A.</div>
+                    <div class="lp-list-item">Bob B.</div>
+                    <div class="lp-list-item">Carol C.</div>
+                </div>
+                <div class="lp-detail">
+                    <div class="lp-card-title">Alice Anderson</div>
+                    <div class="lp-field lp-field--tall"></div>
+                    <div class="lp-btn">Save</div>
+                </div>
+            </div>
+            <Divider Label="Usage" CssClass="my-3" />
+            <CodeSample Language="css" Code="@_masterDetailCss" />
+            <p class="demo-section__hint mt-2">
+                Ideal for: email clients, CRM detail panels, settings pages.
+            </p>
+        </Tab>
+
+    </ChildContent>
+</Tabs>

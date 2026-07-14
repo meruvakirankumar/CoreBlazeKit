@@ -1,0 +1,49 @@
+@namespace CoreBlaze.Components.Shared
+
+<div class="cb-spinner cb-spinner--@SizeClass cb-spinner--@VariantClass @CssClass"
+     role="status"
+     aria-label="@(Label ?? "Loading\u2026")"
+     style="@_sizeVars">
+
+    <div class="cb-spinner__inner">
+        @* Rings — count depends on variant (or the RingCount override) *@
+        @for (var i = 0; i < ActualRingCount; i++)
+        {
+            var idx = i;
+            @if (Variant == SpinnerVariant.Gradient && idx == 0)
+            {
+                <span class="cb-spinner__ring cb-spinner__ring--1"
+                      style="@GetGradientStyle()"></span>
+            }
+            else
+            {
+                <span class="cb-spinner__ring cb-spinner__ring--@(idx + 1)"
+                      style="@GetRingStyle(idx)"></span>
+            }
+        }
+
+        @* Optional centre content *@
+        @if (HasCenter)
+        {
+            <div class="cb-spinner__center">
+                @if (CenterContent is not null)
+                {
+                    @CenterContent
+                }
+                else if (!string.IsNullOrEmpty(CenterImage))
+                {
+                    <img src="@CenterImage" alt="" class="cb-spinner__center-img" />
+                }
+                else if (!string.IsNullOrEmpty(CenterIcon))
+                {
+                    <span class="cb-spinner__center-icon" aria-hidden="true">@CenterIcon</span>
+                }
+            </div>
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <span class="cb-spinner__label">@Label</span>
+    }
+</div>

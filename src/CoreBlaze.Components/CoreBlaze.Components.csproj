@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <RootNamespace>CoreBlaze.Components</RootNamespace>
+    <AssemblyName>CoreBlaze.Components</AssemblyName>
+  </PropertyGroup>
+
+  <!-- NuGet packaging metadata (update before publishing) -->
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>CoreBlaze.Components</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Your Name</Authors>
+    <Company>Your Company</Company>
+    <Product>CoreBlaze</Product>
+    <Description>A lightweight, extensible Blazor component library featuring reusable input controls and a powerful DataGrid.</Description>
+    <PackageTags>blazor;components;razor;ui;datagrid;inputs</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.104.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.28" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Forms" Version="8.0.28" />
+    <PackageReference Include="QuestPDF" Version="2024.12.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Condition="Exists('..\..\README.md')" />
+  </ItemGroup>
+
+</Project>

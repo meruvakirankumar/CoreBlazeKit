@@ -1089,6 +1089,177 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
+   EditableGrid
+   ══════════════════════════════════════════════════════════════ */
+
+.cb-eg-wrapper {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    overflow: hidden;
+    background: var(--cb-surface);
+    font-family: var(--cb-font);
+    font-size: 0.875rem;
+}
+
+/* toolbar */
+.cb-eg-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 0.55rem 0.9rem;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--cb-border);
+    background: var(--cb-surface);
+}
+.cb-eg-title { font-weight: 600; font-size: 0.9rem; color: var(--cb-text); }
+.cb-eg-toolbar__spacer { flex: 1; }
+.cb-eg-add-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.28rem 0.75rem;
+    border-radius: var(--cb-radius);
+    border: 1.5px solid var(--cb-primary);
+    background: transparent;
+    color: var(--cb-primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.cb-eg-add-btn:hover { background: var(--cb-primary); color: #fff; }
+
+/* scroll */
+.cb-eg-scroll { overflow-x: auto; }
+
+/* table */
+.cb-editable-grid {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--cb-text);
+}
+
+/* header */
+.cb-eg__th {
+    padding: 0.55rem 0.75rem;
+    text-align: left;
+    font-size: 0.71rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--cb-text-muted);
+    background: var(--cb-surface);
+    border-bottom: 2px solid var(--cb-border);
+    white-space: nowrap;
+}
+.cb-eg__cmd-th { text-align: center; }
+
+/* cells */
+.cb-eg__td {
+    padding: 0.3rem 0.45rem;
+    border-bottom: 1px solid var(--cb-border);
+    vertical-align: middle;
+}
+.cb-editable-grid tbody tr:last-child .cb-eg__td { border-bottom: 0; }
+.cb-eg__td--readonly { padding: 0.3rem 0.75rem; color: var(--cb-text-muted); font-size: 0.85rem; }
+
+/* alignment */
+.cb-eg--center { text-align: center; }
+.cb-eg--right  { text-align: right; }
+
+/* inputs */
+.cb-eg__input,
+.cb-eg__select {
+    width: 100%;
+    padding: 0.3rem 0.5rem;
+    border: 1.5px solid transparent;
+    border-radius: calc(var(--cb-radius) - 2px);
+    background: transparent;
+    color: var(--cb-text);
+    font-size: 0.875rem;
+    font-family: inherit;
+    transition: border-color 0.15s, background 0.15s;
+    outline: none;
+    box-sizing: border-box;
+}
+.cb-eg__input:hover,
+.cb-eg__select:hover {
+    border-color: var(--cb-border);
+    background: var(--cb-input-bg, var(--cb-surface));
+}
+.cb-eg__input:focus,
+.cb-eg__select:focus {
+    border-color: var(--cb-primary);
+    background: var(--cb-input-bg, var(--cb-surface));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--cb-primary) 15%, transparent);
+}
+.cb-eg__input[type="number"] { text-align: right; }
+.cb-eg__input[type="date"]   { min-width: 9rem; }
+
+/* checkbox cell */
+.cb-eg__checkbox-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.cb-eg__checkbox-wrap input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--cb-primary);
+    cursor: pointer;
+}
+
+/* delete button */
+.cb-eg__cmd-cell { text-align: center; width: 2.5rem; padding: 0.25rem; }
+.cb-eg__delete-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--cb-border);
+    background: transparent;
+    color: var(--cb-text-muted);
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.cb-eg__delete-btn:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
+
+/* row hover */
+.cb-eg__row:hover .cb-eg__td { background: color-mix(in srgb, var(--cb-primary) 3%, transparent); }
+
+/* variants */
+.cb-eg--striped tbody tr:nth-child(odd) .cb-eg__td { background: color-mix(in srgb, var(--cb-primary) 3%, transparent); }
+.cb-eg--dense .cb-eg__th { padding: 0.3rem 0.6rem; }
+.cb-eg--dense .cb-eg__td { padding: 0.15rem 0.3rem; }
+.cb-eg--dense .cb-eg__input,
+.cb-eg--dense .cb-eg__select { padding: 0.18rem 0.4rem; font-size: 0.82rem; }
+
+/* empty */
+.cb-eg__empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--cb-text-muted);
+    font-size: 0.875rem;
+}
+
+/* footer */
+.cb-eg-footer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.35rem 0.9rem;
+    border-top: 1px solid var(--cb-border);
+    font-size: 0.72rem;
+    color: var(--cb-text-muted);
+    background: var(--cb-surface);
+}
+.cb-eg-footer__dirty { color: #f59e0b; font-weight: 600; }
+
+/* ══════════════════════════════════════════════════════════════
    Spinner
    ══════════════════════════════════════════════════════════════ */
 

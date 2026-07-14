@@ -1,0 +1,49 @@
+@namespace CoreBlaze.Components.Grid
+@typeparam T where T : class
+@implements IDisposable
+
+@code {
+    [CascadingParameter] public EditableGrid<T>? Parent { get; set; }
+
+    /// <summary>Property name on <typeparamref name="T"/> to bind.</summary>
+    [Parameter] public string? Field { get; set; }
+
+    /// <summary>Column header text. Defaults to <see cref="Field"/>.</summary>
+    [Parameter] public string? Title { get; set; }
+
+    /// <summary>CSS width (e.g. <c>10rem</c>).</summary>
+    [Parameter] public string? Width { get; set; }
+
+    /// <summary>When <see langword="true"/> the cell is rendered read-only.</summary>
+    [Parameter] public bool Readonly { get; set; }
+
+    /// <summary>When <see langword="false"/> the column is hidden.</summary>
+    [Parameter] public bool Visible { get; set; } = true;
+
+    /// <summary>
+    /// HTML input type override (<c>"text"</c>, <c>"number"</c>, <c>"email"</c>, <c>"url"</c> …).
+    /// Defaults to automatic detection from the property type.
+    /// </summary>
+    [Parameter] public string? InputType { get; set; }
+
+    /// <summary>Placeholder text for text/number inputs.</summary>
+    [Parameter] public string? Placeholder { get; set; }
+
+    /// <summary>Format string for <see cref="IFormattable"/> values in read-only mode.</summary>
+    [Parameter] public string? Format { get; set; }
+
+    /// <summary>Horizontal content alignment.</summary>
+    [Parameter] public GridAlign Align { get; set; } = GridAlign.Left;
+
+    /// <summary>
+    /// Dropdown options. When provided, the cell renders a <c>&lt;select&gt;</c> instead of an input.
+    /// </summary>
+    [Parameter] public IReadOnlyList<string>? Options { get; set; }
+
+    /// <summary>Custom cell render template. Receives the row item.</summary>
+    [Parameter] public RenderFragment<T>? Template { get; set; }
+
+    protected override void OnInitialized() => Parent?.AddColumn(this);
+
+    public void Dispose() => Parent?.RemoveColumn(this);
+}

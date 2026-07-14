@@ -1,0 +1,110 @@
+@page "/grid/editable"
+@using CoreBlaze.Components.Grid
+
+<PageTitle>EditableGrid · CoreBlaze</PageTitle>
+
+<div class="page-header">
+    <h1>EditableGrid</h1>
+    <p class="text-muted">
+        An inline-editable spreadsheet-style grid. Every cell is a live input — text, number, date, checkbox,
+        or dropdown — with auto type detection, add/delete rows, and two-way <code>@@bind-Items</code> binding.
+        No separate "Edit mode" needed.
+    </p>
+</div>
+
+<!-- ══════════════════ Basic editable grid ══════════════════ -->
+<div class="demo-section">
+    <h3>Basic inline editing</h3>
+    <p class="demo-section__hint">Click any cell to edit. Auto-detects text, number, date, bool, and dropdown from the property type.</p>
+
+    <EditableGrid T="Employee" Items="_employees" ItemsChanged="v => _employees = v" Title="Employees" Striped
+                  OnChange="OnEmployeeChanged"
+                  OnRowAdd="OnRowAdded"
+                  OnRowDelete="OnRowDeleted">
+        <EditableGridColumn T="Employee" Field="Name"       Title="Name"         Placeholder="Full name" />
+        <EditableGridColumn T="Employee" Field="Department" Title="Department"
+                            Options="_departments" />
+        <EditableGridColumn T="Employee" Field="HireDate"   Title="Hire date" />
+        <EditableGridColumn T="Employee" Field="Salary"     Title="Salary"       Align="GridAlign.Right" />
+        <EditableGridColumn T="Employee" Field="IsActive"   Title="Active"       Align="GridAlign.Center" />
+    </EditableGrid>
+
+    @if (_lastEvent is not null)
+    {
+        <p class="eg-event-log">@_lastEvent</p>
+    }
+</div>
+
+<!-- ══════════════════ Read-only + custom template ══════════════════ -->
+<div class="demo-section">
+    <h3>Mixed read-only columns &amp; custom templates</h3>
+    <p class="demo-section__hint">
+        Use <code>Readonly</code> to lock a column. Use <code>&lt;Template&gt;</code> for custom cell rendering (e.g. a status badge).
+    </p>
+
+    <EditableGrid T="Employee" Items="_employees" ItemsChanged="v => _employees = v" AllowAdd="false" AllowDelete="false" Dense>
+        <EditableGridColumn T="Employee" Field="Name"       Title="Name"       Readonly="true" />
+        <EditableGridColumn T="Employee" Field="Department" Title="Department" Options="_departments" />
+        <EditableGridColumn T="Employee" Field="Salary"     Title="Salary"     Align="GridAlign.Right" />
+        <EditableGridColumn T="Employee" Field="IsActive"   Title="Status"     Align="GridAlign.Center">
+            <Template Context="emp">
+                <span class="cb-badge @(emp.IsActive ? "cb-badge--success" : "cb-badge--secondary")">
+                    @(emp.IsActive ? "Active" : "Inactive")
+                </span>
+            </Template>
+        </EditableGridColumn>
+    </EditableGrid>
+</div>
+
+<!-- ══════════════════ Inventory example ══════════════════ -->
+<div class="demo-section">
+    <h3>Inventory example</h3>
+    <p class="demo-section__hint">Another model — shows number inputs, inline total calculated on render.</p>
+
+    <EditableGrid T="Product" Items="_products" ItemsChanged="v => _products = v" Title="Stock inventory"
+                  NewRowFactory="NewProduct">
+        <EditableGridColumn T="Product" Field="Name"     Title="Product name"  Placeholder="Enter name…" />
+        <EditableGridColumn T="Product" Field="Category" Title="Category"      Options="_categories" />
+        <EditableGridColumn T="Product" Field="Price"    Title="Unit price"    Align="GridAlign.Right" />
+        <EditableGridColumn T="Product" Field="Qty"      Title="Qty"           Align="GridAlign.Right" Width="6rem" />
+        <EditableGridColumn T="Product" Field="InStock"  Title="In stock"      Align="GridAlign.Center" Width="6rem" />
+        <EditableGridColumn T="Product" Field="Name"     Title="Line total"    Readonly="true" Align="GridAlign.Right">
+            <Template Context="p">
+                <strong>@((p.Price * p.Qty).ToString("C2"))</strong>
+            </Template>
+        </EditableGridColumn>
+    </EditableGrid>
+
+    <div class="eg-totals">
+        <span>Total SKUs: <strong>@_products.Count</strong></span>
+        <span>Grand total: <strong>@(_products.Sum(p => p.Price * p.Qty).ToString("C2"))</strong></span>
+    </div>
+</div>
+
+<!-- ══════════════════ Usage ══════════════════ -->
+<div class="demo-section">
+    <h3>Usage</h3>
+    <CodeSample Code="@_code" />
+</div>
+
+<style>
+.eg-event-log {
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--cb-radius, 0.5rem);
+    background: color-mix(in srgb, #10b981 10%, transparent);
+    color: #065f46;
+    font-size: 0.82rem;
+    border: 1px solid color-mix(in srgb, #10b981 25%, transparent);
+}
+.eg-totals {
+    display: flex;
+    gap: 2rem;
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--cb-text-muted);
+    border-top: 1px solid var(--cb-border);
+}
+.eg-totals strong { color: var(--cb-text); }
+</style>

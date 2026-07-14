@@ -1,0 +1,137 @@
+@namespace CoreBlaze.Components.Grid
+@typeparam T where T : class
+
+<CascadingValue Value="this" IsFixed="false">
+    @ChildContent
+</CascadingValue>
+
+@if (_ready)
+{
+    <div class="cb-eg-wrapper @CssClass">
+
+        @if (!string.IsNullOrEmpty(Title) || AllowAdd)
+        {
+            <div class="cb-eg-toolbar">
+                @if (!string.IsNullOrEmpty(Title))
+                {
+                    <span class="cb-eg-title">@Title</span>
+                }
+                <span class="cb-eg-toolbar__spacer"></span>
+                @if (AllowAdd)
+                {
+                    <button type="button" class="cb-eg-add-btn" @onclick="AddRow">
+                        + Add row
+                    </button>
+                }
+            </div>
+        }
+
+        <div class="cb-eg-scroll">
+            <table class="cb-editable-grid @(Striped ? "cb-eg--striped" : null) @(Dense ? "cb-eg--dense" : null)">
+                <thead>
+                    <tr>
+                        @foreach (var col in _visibleCols)
+                        {
+                            <th class="cb-eg__th @AlignClass(col)"
+                                style="@(col.Width != null ? $"width:{col.Width}" : null)">
+                                @(col.Title ?? col.Field)
+                            </th>
+                        }
+                        @if (AllowDelete)
+                        {
+                            <th class="cb-eg__th cb-eg__cmd-th" style="width:2.5rem"></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Items.Any())
+                    {
+                        <tr>
+                            <td colspan="@(_visibleCols.Count + (AllowDelete ? 1 : 0))" class="cb-eg__empty">
+                                @(EmptyMessage ?? "No records. Click \"+ Add row\" to start.")
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Items)
+                        {
+                            <tr class="cb-eg__row">
+                                @foreach (var col in _visibleCols)
+                                {
+                                    var ci = GetCellInfo(col, item);
+                                    <td class="cb-eg__td @AlignClass(col) @(ci.IsReadonly ? "cb-eg__td--readonly" : null)">
+                                        @if (ci.IsReadonly || col.Template is not null)
+                                        {
+                                            @if (col.Template is not null)
+                                            {
+                                                @col.Template(item)
+                                            }
+                                            else
+                                            {
+                                                <span>@ci.DisplayValue</span>
+                                            }
+                                        }
+                                        else if (ci.HasOptions)
+                                        {
+                                            <select class="cb-eg__select"
+                                                    @onchange="async e => await SetValueAsync(item, col, e.Value?.ToString())">
+                                                <option value="">—</option>
+                                                @foreach (var opt in ci.Options!)
+                                                {
+                                                    <option value="@opt" selected="@(ci.DisplayValue == opt)">@opt</option>
+                                                }
+                                            </select>
+                                        }
+                                        else if (ci.IsCheckbox)
+                                        {
+                                            <label class="cb-eg__checkbox-wrap">
+                                                <input type="checkbox"
+                                                       checked="@ci.CheckedValue"
+                                                       @onchange="async e => await SetValueAsync(item, col, e.Value)" />
+                                            </label>
+                                        }
+                                        else if (ci.IsDate)
+                                        {
+                                            <input type="date" class="cb-eg__input"
+                                                   value="@ci.DateValue"
+                                                   @oninput="async e => await SetValueAsync(item, col, e.Value?.ToString())" />
+                                        }
+                                        else
+                                        {
+                                            <input type="@ci.InputType" class="cb-eg__input"
+                                                   value="@ci.DisplayValue"
+                                                   placeholder="@col.Placeholder"
+                                                   step="@(ci.InputType == "number" ? "any" : null)"
+                                                   @oninput="async e => await SetValueAsync(item, col, e.Value?.ToString())" />
+                                        }
+                                    </td>
+                                }
+                                @if (AllowDelete)
+                                {
+                                    <td class="cb-eg__td cb-eg__cmd-cell">
+                                        <button type="button" class="cb-eg__delete-btn"
+                                                title="Delete row"
+                                                @onclick="() => DeleteRow(item)">✕</button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (ShowFooter)
+        {
+            <div class="cb-eg-footer">
+                <span>@Items.Count() row@(Items.Count() != 1 ? "s" : "")</span>
+                @if (_changeCount > 0)
+                {
+                    <span class="cb-eg-footer__dirty">@_changeCount unsaved change@(_changeCount != 1 ? "s" : "")</span>
+                }
+            </div>
+        }
+
+    </div>
+}

@@ -1,9 +1,5 @@
 name: Publish to NuGet
 
-# Triggers:
-#   1. Push a version tag  →  git tag v0.2.0 && git push origin v0.2.0
-#   2. Publish a GitHub Release from the UI
-#   3. Manual run from the Actions tab
 on:
   push:
     tags:
@@ -16,7 +12,6 @@ on:
         description: 'Package version (e.g. 0.2.0) — leave blank to read from csproj'
         required: false
 
-# Prevent two publish runs overlapping on the same ref
 concurrency:
   group: nuget-publish-${{ github.ref }}
   cancel-in-progress: false
@@ -26,43 +21,34 @@ jobs:
     name: Build · Test · Pack · Push
     runs-on: ubuntu-latest
 
-    # "nuget-prod" is a GitHub Environment that you create under
-    # Settings → Environments.  Add yourself as a required reviewer
-    # so every publish needs your manual approval.
+    # Must match the Environment name you set in NuGet Trusted Publishers form
     environment: nuget-prod
 
-    # NUGET_API_KEY is read from the environment's secret store —
-    # it never appears as a CLI argument (visible in logs / ps output).
-    env:
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    # Required for NuGet Trusted Publishing (OIDC — no API key secret needed)
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
-      # ── Checkout ──────────────────────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # full history needed for SourceLink
+          fetch-depth: 0
 
-      # ── .NET 8 ────────────────────────────────────────────────────────
       - name: Set up .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      # ── Restore ───────────────────────────────────────────────────────
       - name: Restore dependencies
         run: dotnet restore
 
-      # ── Build ─────────────────────────────────────────────────────────
       - name: Build (Release)
         run: dotnet build --configuration Release --no-restore
 
-      # ── Test ──────────────────────────────────────────────────────────
       - name: Run tests
         run: dotnet test --configuration Release --no-build --verbosity minimal
 
-      # ── Resolve version ───────────────────────────────────────────────
-      # Priority: manual input → git tag → csproj value
       - name: Resolve package version
         id: version
         run: |
@@ -77,9 +63,7 @@ jobs:
               | sed 's/.*<Version>\(.*\)<\/Version>.*/\1/')
             echo "VERSION=$VER" >> $GITHUB_OUTPUT
           fi
-          echo "Resolved version: $(cat $GITHUB_OUTPUT | grep VERSION | cut -d= -f2)"
 
-      # ── Pack ──────────────────────────────────────────────────────────
       - name: Pack NuGet packages
         run: |
           dotnet pack src/CoreBlaze.Components/CoreBlaze.Components.csproj \
@@ -89,11 +73,9 @@ jobs:
             /p:Version=${{ steps.version.outputs.VERSION }} \
             /p:ContinuousIntegrationBuild=true
 
-      # ── List packages ─────────────────────────────────────────────────
       - name: List generated packages
         run: ls -lh ./nupkg
 
-      # ── Upload artifact (inspect before it goes live) ─────────────────
       - name: Upload as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -101,20 +83,44 @@ jobs:
           path: ./nupkg/*.nupkg
           retention-days: 14
 
-      # ── Push .nupkg ───────────────────────────────────────────────────
-      # The NUGET_API_KEY env var is resolved from the GitHub Environment
-      # secret — it is masked in all log output automatically.
+      # ── Trusted Publishing (OIDC) ─────────────────────────────────────
+      # NuGet.org validates the GitHub OIDC token against the Trusted Publisher
+      # policy you configured at nuget.org/account/TrustedPublishers.
+      # No NUGET_API_KEY secret is required.
+      - name: Get NuGet API token via Trusted Publishing (OIDC)
+        id: nuget-token
+        run: |
+          # Request GitHub OIDC token with NuGet audience
+          OIDC_TOKEN=$(curl -sS \
+            -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=api://AzureADTokenExchange" \
+            | jq -r '.value')
+
+          # Exchange OIDC token for a short-lived NuGet API key
+          NUGET_KEY=$(curl -sS -X POST \
+            "https://www.nuget.org/api/v1/authenticate" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $OIDC_TOKEN" \
+            | jq -r '.apiKey // empty')
+
+          if [ -z "$NUGET_KEY" ]; then
+            echo "::error::Failed to obtain NuGet token via Trusted Publishing. Check the policy on nuget.org."
+            exit 1
+          fi
+
+          echo "::add-mask::$NUGET_KEY"
+          echo "api_key=$NUGET_KEY" >> "$GITHUB_OUTPUT"
+
       - name: Push .nupkg to NuGet.org
         run: |
           dotnet nuget push "./nupkg/*.nupkg" \
-            --api-key "$NUGET_API_KEY" \
+            --api-key "${{ steps.nuget-token.outputs.api_key }}" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
 
-      # ── Push .snupkg (symbols) ────────────────────────────────────────
       - name: Push .snupkg symbols to NuGet.org
         run: |
           dotnet nuget push "./nupkg/*.snupkg" \
-            --api-key "$NUGET_API_KEY" \
+            --api-key "${{ steps.nuget-token.outputs.api_key }}" \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
